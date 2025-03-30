@@ -1,10 +1,10 @@
-#include <assert.h>
-#include <malloc.h>
-#include <string.h>
-
 #include "hw9.h"
 
-// 1. Fort Construction
+#include <assert.h>
+#include <malloc.h>
+#include <math.h>
+#include <string.h>
+
 void build_fort(char *name, int overrun, float north, float west,
                 fort_t **head) {
   assert(name != NULL);
@@ -31,12 +31,10 @@ void build_fort(char *name, int overrun, float north, float west,
   *head = new_fort;
 }
 
-// 2. Fort Insertion
 int chart_fort(fort_t **head, fort_t *new_fort) {
   assert(head != NULL);
   assert(new_fort != NULL);
 
-  // Check for duplicate location
   fort_t *current = *head;
   while (current != NULL) {
     if ((int)current->distance_west == (int)new_fort->distance_west &&
@@ -46,7 +44,6 @@ int chart_fort(fort_t **head, fort_t *new_fort) {
     current = current->next_fort;
   }
 
-  // Find insertion point
   fort_t *prev = NULL;
   current = *head;
   while (current != NULL &&
@@ -57,7 +54,6 @@ int chart_fort(fort_t **head, fort_t *new_fort) {
     current = current->next_fort;
   }
 
-  // Insert node
   new_fort->prev_fort = prev;
   new_fort->next_fort = current;
 
@@ -74,7 +70,6 @@ int chart_fort(fort_t **head, fort_t *new_fort) {
   return OK;
 }
 
-// 3. Resource Addition
 void add_resource(fort_t *fort, enum resource_types_t type, float weight) {
   assert(fort != NULL);
   assert(weight > 0);
@@ -93,7 +88,6 @@ void add_resource(fort_t *fort, enum resource_types_t type, float weight) {
   fort->resource_list = new_resource;
 }
 
-// 4. Wagon Construction
 void construct_wagon(char *name, int adults, int children, float capacity,
                      fort_t *fort) {
   assert(name != NULL);
@@ -116,7 +110,6 @@ void construct_wagon(char *name, int adults, int children, float capacity,
   new_wagon->food_reserves = 0;
   new_wagon->medicine_reserves = 0;
 
-  // Find insertion point
   covered_wagon_t *prev = NULL;
   covered_wagon_t *current = fort->covered_wagon_list;
   while (current != NULL && strcmp(current->name, name) < 0) {
@@ -138,12 +131,10 @@ void construct_wagon(char *name, int adults, int children, float capacity,
   }
 }
 
-// 5. Resource Collection
 float collect_resources(fort_t *fort, char *wagon_name) {
   assert(fort != NULL);
   assert(wagon_name != NULL);
 
-  // Find the wagon
   covered_wagon_t *wagon = fort->covered_wagon_list;
   while (wagon != NULL && strcmp(wagon->name, wagon_name) != 0) {
     wagon = wagon->next_covered_wagon;
@@ -151,9 +142,8 @@ float collect_resources(fort_t *fort, char *wagon_name) {
   if (wagon == NULL) return NO_SUCH_WAGON;
 
   resource_t *current = fort->resource_list;
-  resource_t *max_resources[3] = {NULL};  // Index by resource_type
+  resource_t *max_resources[3] = {NULL};
 
-  // Find heaviest of each type
   while (current != NULL) {
     resource_t *next = current->next_resource;
     int type = current->resource_type;
@@ -167,11 +157,9 @@ float collect_resources(fort_t *fort, char *wagon_name) {
     current = next;
   }
 
-  // Collect and remove resources
   float total_weight = 0;
   for (int i = 0; i < 3; i++) {
     if (max_resources[i] != NULL) {
-      // Remove from list
       if (max_resources[i]->prev_resource != NULL) {
         max_resources[i]->prev_resource->next_resource =
             max_resources[i]->next_resource;
@@ -183,7 +171,6 @@ float collect_resources(fort_t *fort, char *wagon_name) {
             max_resources[i]->prev_resource;
       }
 
-      // Add to reserves
       switch (max_resources[i]->resource_type) {
         case WATER:
           wagon->water_reserves += max_resources[i]->weight;
@@ -203,14 +190,12 @@ float collect_resources(fort_t *fort, char *wagon_name) {
   return total_weight;
 }
 
-// 6. Fort Demolition
 void demolish_fort(fort_t **fort_ptr) {
   assert(fort_ptr != NULL);
   assert(*fort_ptr != NULL);
 
   fort_t *fort = *fort_ptr;
 
-  // Free resources
   resource_t *resource = fort->resource_list;
   while (resource != NULL) {
     resource_t *next = resource->next_resource;
@@ -218,7 +203,6 @@ void demolish_fort(fort_t **fort_ptr) {
     resource = next;
   }
 
-  // Free wagons
   covered_wagon_t *wagon = fort->covered_wagon_list;
   while (wagon != NULL) {
     covered_wagon_t *next = wagon->next_covered_wagon;
@@ -227,7 +211,6 @@ void demolish_fort(fort_t **fort_ptr) {
     wagon = next;
   }
 
-  // Update neighbors
   if (fort->prev_fort != NULL) {
     fort->prev_fort->next_fort = fort->next_fort;
   }
@@ -235,7 +218,6 @@ void demolish_fort(fort_t **fort_ptr) {
     fort->next_fort->prev_fort = fort->prev_fort;
   }
 
-  // Update head if needed
   if (*fort_ptr == fort) {
     *fort_ptr = fort->next_fort;
   }
@@ -244,7 +226,6 @@ void demolish_fort(fort_t **fort_ptr) {
   free(fort);
 }
 
-// 7. Bandit Purge
 int overrun_forts(fort_t **head) {
   assert(head != NULL);
   assert(*head != NULL);
@@ -264,13 +245,11 @@ int overrun_forts(fort_t **head) {
   return count;
 }
 
-// 8. Westward Journey
 float manifest_destiny(fort_t **current_fort, char *wagon_name) {
   assert(current_fort != NULL);
   assert(*current_fort != NULL);
   assert(wagon_name != NULL);
 
-  // Find the wagon
   covered_wagon_t *wagon = (*current_fort)->covered_wagon_list;
   while (wagon != NULL && strcmp(wagon->name, wagon_name) != 0) {
     wagon = wagon->next_covered_wagon;
@@ -282,12 +261,10 @@ float manifest_destiny(fort_t **current_fort, char *wagon_name) {
   while ((*current_fort)->next_fort != NULL) {
     fort_t *next_fort = (*current_fort)->next_fort;
 
-    // Calculate distance
     float dn = next_fort->distance_north - (*current_fort)->distance_north;
     float dw = next_fort->distance_west - (*current_fort)->distance_west;
     int distance = (int)sqrt(dn * dn + dw * dw);
 
-    // Calculate resource needs
     float water_needed = (WATER_PER_AD_PER_DIS * wagon->num_adults +
                           WATER_PER_CH_PER_DIS * wagon->num_children) *
                          distance;
@@ -298,20 +275,16 @@ float manifest_destiny(fort_t **current_fort, char *wagon_name) {
                         MEDICINE_PER_CH_PER_DIS * wagon->num_children) *
                        distance;
 
-    // Check if resources are sufficient
     if (wagon->water_reserves < water_needed ||
         wagon->food_reserves < food_needed ||
         wagon->medicine_reserves < med_needed) {
       break;
     }
 
-    // Deduct resources
     wagon->water_reserves -= water_needed;
     wagon->food_reserves -= food_needed;
     wagon->medicine_reserves -= med_needed;
 
-    // Move wagon to next fort
-    // Remove from current fort
     if (wagon->prev_covered_wagon != NULL) {
       wagon->prev_covered_wagon->next_covered_wagon = wagon->next_covered_wagon;
     } else {
@@ -321,7 +294,6 @@ float manifest_destiny(fort_t **current_fort, char *wagon_name) {
       wagon->next_covered_wagon->prev_covered_wagon = wagon->prev_covered_wagon;
     }
 
-    // Insert into next fort
     covered_wagon_t *prev = NULL;
     covered_wagon_t *curr = next_fort->covered_wagon_list;
     while (curr != NULL && strcmp(curr->name, wagon->name) < 0) {
@@ -340,7 +312,6 @@ float manifest_destiny(fort_t **current_fort, char *wagon_name) {
       curr->prev_covered_wagon = wagon;
     }
 
-    // Update current fort and check bandits
     *current_fort = next_fort;
     total_distance += distance;
 
@@ -352,7 +323,6 @@ float manifest_destiny(fort_t **current_fort, char *wagon_name) {
   return total_distance;
 }
 
-// 9. List Reversal
 void unmanifest_destiny(fort_t **head) {
   assert(head != NULL);
   assert(*head != NULL);

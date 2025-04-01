@@ -15,7 +15,7 @@
 #include <string.h>
 
 void build_fort(char *name, int overrun, float north, float west,
-                fort_t **head) {
+               fort_t **head) {
   assert(name != NULL);
   assert(head != NULL);
   assert(*head == NULL);
@@ -80,21 +80,20 @@ int chart_fort(fort_t **head, fort_t *new_fort) {
 }
 
 void add_resource(fort_t *fort, enum resource_types_t type, float weight) {
-    assert(fort != NULL);
-    assert(type >= WATER && type <= MEDICINE);
-    assert(weight > 0.0f);
+  assert(fort != NULL);
+  assert(type >= WATER && type <= MEDICINE);
+  assert(weight > 0.0f);
 
-    resource_t *new_res = malloc(sizeof(resource_t));
-    assert(new_res != NULL);
+  resource_t *new_res = malloc(sizeof(resource_t));
+  assert(new_res != NULL);
 
-    new_res->resource_type = type;
-    new_res->weight = weight;
-    new_res->next_resource = fort->resource_list;
-    new_res->prev_resource = NULL;
+  new_res->resource_type = type;
+  new_res->weight = weight;
+  new_res->next_resource = fort->resource_list;
+  new_res->prev_resource = NULL;
 
-    if(fort->resource_list)
-        fort->resource_list->prev_resource = new_res;
-    fort->resource_list = new_res;
+  if (fort->resource_list) fort->resource_list->prev_resource = new_res;
+  fort->resource_list = new_res;
 }
 
 void construct_wagon(char *name, int adults, int children, float capacity,
@@ -153,14 +152,17 @@ float collect_resources(fort_t *fort, char *wagon_name) {
   for (int resource_type = WATER; resource_type <= MEDICINE; resource_type++) {
     resource_t *current_resource = fort->resource_list;
     resource_t *heaviest_resource = NULL;
-    float available_capacity = (resource_type == WATER)  ? current_wagon->water_reserves
-                        : (resource_type == FOOD) ? current_wagon->food_reserves
-                                                 : current_wagon->medicine_reserves;
+    float available_capacity =
+        (resource_type == WATER)  ? current_wagon->water_reserves
+        : (resource_type == FOOD) ? current_wagon->food_reserves
+                                  : current_wagon->medicine_reserves;
 
     while (current_resource) {
       if (current_resource->resource_type == resource_type &&
-          current_resource->weight <= current_wagon->max_capacity - available_capacity) {
-        if (!heaviest_resource || current_resource->weight > heaviest_resource->weight) {
+          current_resource->weight <=
+              current_wagon->max_capacity - available_capacity) {
+        if (!heaviest_resource ||
+            current_resource->weight > heaviest_resource->weight) {
           heaviest_resource = current_resource;
         }
       }
@@ -176,10 +178,12 @@ float collect_resources(fort_t *fort, char *wagon_name) {
         current_wagon->medicine_reserves += heaviest_resource->weight;
 
       if (heaviest_resource->prev_resource) {
-        heaviest_resource->prev_resource->next_resource = heaviest_resource->next_resource;
+        heaviest_resource->prev_resource->next_resource =
+            heaviest_resource->next_resource;
       }
       if (heaviest_resource->next_resource) {
-        heaviest_resource->next_resource->prev_resource = heaviest_resource->prev_resource;
+        heaviest_resource->next_resource->prev_resource =
+            heaviest_resource->prev_resource;
       }
       if (fort->resource_list == heaviest_resource) {
         fort->resource_list = heaviest_resource->next_resource;
@@ -197,7 +201,6 @@ void demolish_fort(fort_t **fort_ptr) {
 
   fort_t *fort = *fort_ptr;
 
-  // Adjust neighboring nodes to remove the fort from the list
   if (fort->prev_fort != NULL) {
     fort->prev_fort->next_fort = fort->next_fort;
   }
@@ -205,19 +208,16 @@ void demolish_fort(fort_t **fort_ptr) {
     fort->next_fort->prev_fort = fort->prev_fort;
   }
 
-  // Determine the new head of the list
   fort_t *new_head = NULL;
-  if (fort->prev_fort == NULL) { // Fort was the head
+  if (fort->prev_fort == NULL) {
     new_head = fort->next_fort;
   } else {
-    // Traverse to find the head from the previous node
     new_head = fort->prev_fort;
     while (new_head->prev_fort != NULL) {
       new_head = new_head->prev_fort;
     }
   }
 
-  // Free resources and wagons
   resource_t *resource = fort->resource_list;
   while (resource != NULL) {
     resource_t *next = resource->next_resource;
@@ -236,7 +236,6 @@ void demolish_fort(fort_t **fort_ptr) {
   free(fort->name);
   free(fort);
 
-  // Update the head pointer
   *fort_ptr = new_head;
 }
 
@@ -263,7 +262,8 @@ int overrun_forts(fort_t **head) {
   }
 
   current_fort = *head;
-  while (current_fort && current_fort->prev_fort) current_fort = current_fort->prev_fort;
+  while (current_fort && current_fort->prev_fort)
+    current_fort = current_fort->prev_fort;
   return count;
 }
 
@@ -352,15 +352,13 @@ void unmanifest_destiny(fort_t **head) {
   fort_t *current = *head;
   fort_t *temp = NULL;
 
-  // Swap next and prev for all nodes
   while (current != NULL) {
     temp = current->prev_fort;
     current->prev_fort = current->next_fort;
     current->next_fort = temp;
-    current = current->prev_fort; // Move to the next node (original next)
+    current = current->prev_fort;
   }
 
-  // Update the head to the last node (original tail)
   if (temp != NULL) {
     *head = temp->prev_fort;
   }

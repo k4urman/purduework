@@ -342,6 +342,10 @@ float manifest_destiny(fort_t **current_fort, char *wagon_name) {
     }
   }
 
+  if ((*current_fort)->overrun_by_bandits != 0) {
+    return EATEN_BY_SASQUATCH;
+  }
+
   return total_distance;
 }
 
@@ -350,16 +354,21 @@ void unmanifest_destiny(fort_t **head) {
   assert(*head != NULL);
 
   fort_t *current = *head;
-  fort_t *temp = NULL;
-
-  while (current != NULL) {
-    temp = current->prev_fort;
-    current->prev_fort = current->next_fort;
-    current->next_fort = temp;
+  while (current->prev_fort != NULL) {
     current = current->prev_fort;
   }
 
-  if (temp != NULL) {
-    *head = temp->prev_fort;
+  fort_t *temp = NULL;
+  fort_t *new_head = NULL;
+
+  while (current != NULL) {
+    temp = current->next_fort;
+    current->next_fort = current->prev_fort;
+    current->prev_fort = temp;
+
+    new_head = current;
+    current = temp;
   }
+
+  *head = new_head;
 }

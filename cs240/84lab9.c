@@ -268,85 +268,90 @@ int overrun_forts(fort_t **head) {
 }
 
 float manifest_destiny(fort_t **current_fort, char *wagon_name) {
-  assert(current_fort != NULL);
-  assert(*current_fort != NULL);
-  assert(wagon_name != NULL);
+    assert(current_fort != NULL);
+    assert(*current_fort != NULL);
+    assert(wagon_name != NULL);
 
-  covered_wagon_t *wagon = (*current_fort)->covered_wagon_list;
-  while (wagon != NULL && strcmp(wagon->name, wagon_name) != 0) {
-    wagon = wagon->next_covered_wagon;
-  }
-  if (wagon == NULL) return NO_SUCH_WAGON;
+    covered_wagon_t *wagon = (*current_fort)->covered_wagon_list;
+    while (wagon != NULL && strcmp(wagon->name, wagon_name) != 0) {
+        wagon = wagon->next_covered_wagon;
+    }
+    if (wagon == NULL) return NO_SUCH_WAGON;
 
-  float total_distance = 0;
-
-  while ((*current_fort)->next_fort != NULL) {
-    fort_t *next_fort = (*current_fort)->next_fort;
-
-    float dn = next_fort->distance_north - (*current_fort)->distance_north;
-    float dw = next_fort->distance_west - (*current_fort)->distance_west;
-    int distance = (int)sqrt(dn * dn + dw * dw);
-
-    float water_needed = (WATER_PER_AD_PER_DIS * wagon->num_adults +
-                          WATER_PER_CH_PER_DIS * wagon->num_children) *
-                         distance;
-    float food_needed = (FOOD_PER_AD_PER_DIS * wagon->num_adults +
-                         FOOD_PER_CH_PER_DIS * wagon->num_children) *
-                        distance;
-    float med_needed = (MEDICINE_PER_AD_PER_DIS * wagon->num_adults +
-                        MEDICINE_PER_CH_PER_DIS * wagon->num_children) *
-                       distance;
-
-    if (wagon->water_reserves < water_needed ||
-        wagon->food_reserves < food_needed ||
-        wagon->medicine_reserves < med_needed) {
-      break;
+    if ((*current_fort)->overrun_by_bandits != 0) {
+        return EATEN_BY_SASQUATCH;
     }
 
-    wagon->water_reserves -= water_needed;
-    wagon->food_reserves -= food_needed;
-    wagon->medicine_reserves -= med_needed;
+    float total_distance = 0.0f;
 
-    if (wagon->prev_covered_wagon != NULL) {
-      wagon->prev_covered_wagon->next_covered_wagon = wagon->next_covered_wagon;
-    } else {
-      (*current_fort)->covered_wagon_list = wagon->next_covered_wagon;
+    while ((*current_fort)->next_fort != NULL) {
+        fort_t *next_fort = (*current_fort)->next_fort;
+
+        if (next_fort->overrun_by_bandits != 0) {
+            return EATEN_BY_SASQUATCH;
+        }
+
+        float dn = next_fort->distance_north - (*current_fort)->distance_north;
+        float dw = next_fort->distance_west - (*current_fort)->distance_west;
+        int distance = (int)sqrt(dn * dn + dw * dw);
+
+        float water_needed = (WATER_PER_AD_PER_DIS * wagon->num_adults +
+                             WATER_PER_CH_PER_DIS * wagon->num_children) * distance;
+        float food_needed = (FOOD_PER_AD_PER_DIS * wagon->num_adults +
+                            FOOD_PER_CH_PER_DIS * wagon->num_children) * distance;
+        float med_needed = (MEDICINE_PER_AD_PER_DIS * wagon->num_adults +
+                           MEDICINE_PER_CH_PER_DIS * wagon->num_children) * distance;
+
+        if (wagon->water_reserves < water_needed ||
+            wagon->food_reserves < food_needed ||
+            wagon->medicine_reserves < med_needed) {
+            break;
+        }
+
+        wagon->water_reserves -= water_needed;
+        wagon->food_reserves -= food_needed;
+        wagon->medicine_reserves -= med_needed;
+
+        if (wagon->prev_covered_wagon != NULL) {
+            wagon->prev_covered_wagon->next_covered_wagon = wagon->next_covered_wagon;
+        } else {
+            (*current_fort)->covered_wagon_list = wagon->next_covered_wagon;
+        }
+        if (wagon->next_covered_wagon != NULL) {
+            wagon->next_covered_wagon->prev_covered_wagon = wagon->prev_covered_wagon;
+        }
+
+        covered_wagon_t **new_list = &next_fort->covered_wagon_list;
+        covered_wagon_t *prev = NULL, *curr = *new_list;
+        while (curr != NULL && strcmp(curr->name, wagon->name) < 0) {
+            prev = curr;
+            curr = curr->next_covered_wagon;
+        }
+
+        wagon->prev_covered_wagon = prev;
+        wagon->next_covered_wagon = curr;
+        if (prev != NULL) {
+            prev->next_covered_wagon = wagon;
+        } else {
+            *new_list = wagon;
+        }
+        if (curr != NULL) {
+            curr->prev_covered_wagon = wagon;
+        }
+
+        *current_fort = next_fort;
+        total_distance += (float)distance;
+
+        if ((*current_fort)->overrun_by_bandits != 0) {
+            return EATEN_BY_SASQUATCH;
+        }
     }
-    if (wagon->next_covered_wagon != NULL) {
-      wagon->next_covered_wagon->prev_covered_wagon = wagon->prev_covered_wagon;
+
+    if ((*current_fort)->overrun_by_bandits != 0) {
+        return EATEN_BY_SASQUATCH;
     }
 
-    covered_wagon_t *prev = NULL;
-    covered_wagon_t *curr = next_fort->covered_wagon_list;
-    while (curr != NULL && strcmp(curr->name, wagon->name) < 0) {
-      prev = curr;
-      curr = curr->next_covered_wagon;
-    }
-
-    wagon->prev_covered_wagon = prev;
-    wagon->next_covered_wagon = curr;
-    if (prev != NULL) {
-      prev->next_covered_wagon = wagon;
-    } else {
-      next_fort->covered_wagon_list = wagon;
-    }
-    if (curr != NULL) {
-      curr->prev_covered_wagon = wagon;
-    }
-
-    *current_fort = next_fort;
-    total_distance += distance;
-
-    if (next_fort->overrun_by_bandits != 0) {
-      return EATEN_BY_SASQUATCH;
-    }
-  }
-
-  if ((*current_fort)->overrun_by_bandits != 0) {
-    return EATEN_BY_SASQUATCH;
-  }
-
-  return total_distance;
+    return total_distance;
 }
 
 void unmanifest_destiny(fort_t **head) {

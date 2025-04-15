@@ -165,103 +165,55 @@ int purge_small_rings(ring_t **root, int min_sites) {
     return left_purged + right_purged;
 }
 
-int delete_dead_links(ring_t *root, char *flag_word) {
-    // Assert that inputs are not NULL
-    assert(root != NULL);
-    assert(flag_word != NULL);
 
+int delete_dead_links(ring_t *root, char *flag_word) {
+    assert(root != NULL && flag_word != NULL);
     int total_deleted = 0;
 
-    // Recursively process left and right subtrees if they exist
-    if (root->left != NULL) {
-        total_deleted += delete_dead_links(root->left, flag_word);
-    }
-    if (root->right != NULL) {
-        total_deleted += delete_dead_links(root->right, flag_word);
-    }
+    if (root->left) total_deleted += delete_dead_links(root->left, flag_word);
+    if (root->right) total_deleted += delete_dead_links(root->right, flag_word);
 
-    // Process the current ring's site list
     site_t *current = root->site_list;
-    if (current == NULL) {
-        return total_deleted;
-    }
+    if (!current) return total_deleted;
 
     site_t *head = current;
-    site_t *to_delete = NULL;
-    int sites_processed = 0;
     int sites_deleted = 0;
+    site_t *to_delete;
 
-    // Traverse the CDLL to delete sites containing flag_word
     do {
-        if (strstr(current->site_name, flag_word) != NULL) {
+        if (strstr(current->site_name, flag_word)) {
             to_delete = current;
-            site_t *prev = current->prev_site;
-            site_t *next = current->next_site;
-
+            site_t *prev = to_delete->prev_site;
+            site_t *next = to_delete->next_site;
             prev->next_site = next;
             next->prev_site = prev;
 
-            // If deleting the head, update head before moving
-            if (to_delete == head) {
-                head = (next != to_delete) ? next : NULL;
-            }
-
-            // Move current to next before freeing
+            if (to_delete == head) head = (next != to_delete) ? next : NULL;
             current = next;
 
             free(to_delete->site_name);
             free(to_delete);
             sites_deleted++;
-
-            // If all sites are deleted, break out of the loop
-            if (head == NULL) {
-                break;
-            }
         } else {
             current = current->next_site;
         }
-        sites_processed++;
-    } while (current != head && sites_processed < 1000); // Safety limit
+    } while (current != head && head != NULL); // Remove safety limit
 
-    // Update the ring's site_list to the new head or NULL
-    if (head == NULL) {
-        root->site_list = NULL;
-    } else {
-        // Find the new head according to the specified order
-        site_t *new_head = head;
-        int min_len = strlen(new_head->site_name);
-        site_t *temp = new_head->next_site;
-
-        while (temp != head) {
-            int curr_len = strlen(temp->site_name);
-            if (curr_len < min_len || (curr_len == min_len && strcmp(temp->site_name, new_head->site_name) < 0)) {
-                new_head = temp;
-                min_len = curr_len;
-            }
-            temp = temp->next_site;
-        }
-        root->site_list = new_head;
-    }
-
-    total_deleted += sites_deleted;
-    return total_deleted;
+    root->site_list = (head) ? find_cdll_head(head) : NULL;
+    return total_deleted + sites_deleted;
 }
-
 
 
 
 int total_surf_chain_length(ring_t *root) {
-    // Handle empty BST case first
     if (root == NULL) {
         return 0;
     }
-    // Assertion for non-NULL root (as per problem statement)
-    assert(root != NULL);
+    assert(root != NULL); // Assert after checking for NULL to handle empty BST
     return count_sites(root->site_list) +
            total_surf_chain_length(root->left) +
            total_surf_chain_length(root->right);
 }
-
 
 
 

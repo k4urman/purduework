@@ -267,87 +267,69 @@ int total_surf_chain_length(ring_t *root) {
 
 
 int scavenge_neighboring_rings(ring_t *root, int min_sites) {
-    // Assertion to validate inputs (root != NULL and min_sites >= 0)
     assert(root != NULL && min_sites >= 0);
-
     int scavenged = 0;
     int current_count = count_sites(root->site_list);
 
-    // Only proceed if current ring is underpopulated
     if (current_count < min_sites) {
         ring_t *child = NULL;
-        int left_count = (root->left != NULL) ? count_sites(root->left->site_list) : 0;
-        int right_count = (root->right != NULL) ? count_sites(root->right->site_list) : 0;
+        int left_count = (root->left) ? count_sites(root->left->site_list) : 0;
+        int right_count = (root->right) ? count_sites(root->right->site_list) : 0;
+        int needed = min_sites - current_count;
 
-        // Choose child with higher count, left on tie
+        // Choose child with sufficient sites
         if (left_count >= right_count) {
-            if (root->left != NULL && (left_count - (min_sites - current_count)) >= min_sites) {
-                child = root->left;
-            }
+            if (root->left && (left_count - needed) >= min_sites) child = root->left;
         } else {
-            if (root->right != NULL && (right_count - (min_sites - current_count)) >= min_sites) {
-                child = root->right;
-            }
+            if (root->right && (right_count - needed) >= min_sites) child = root->right;
         }
 
-        if (child != NULL) {
-            int needed = min_sites - current_count;
+        if (child) {
             site_t **to_move = malloc(needed * sizeof(site_t *));
             int move_count = 0;
 
             for (int i = 0; i < needed; i++) {
                 site_t *min_site = child->site_list;
                 site_t *current = child->site_list;
-                if (current == NULL) break;
+                if (!current) break;
 
-                // Find the smallest site in the child's CDLL
-                do {
+                do { // Find smallest site
                     if (strlen(current->site_name) < strlen(min_site->site_name) ||
                         (strlen(current->site_name) == strlen(min_site->site_name) &&
-                         strcmp(current->site_name, min_site->site_name) < 0)) {
+                        strcmp(current->site_name, min_site->site_name) < 0)) {
                         min_site = current;
                     }
                     current = current->next_site;
                 } while (current != child->site_list);
 
-                // Remove min_site from child's CDLL
+                // Remove min_site from child
                 min_site->prev_site->next_site = min_site->next_site;
                 min_site->next_site->prev_site = min_site->prev_site;
                 if (min_site == child->site_list) {
                     child->site_list = (min_site->next_site != min_site) ? min_site->next_site : NULL;
                 }
-
                 to_move[move_count++] = min_site;
             }
 
-            // Add scavenged sites to the current ring
+            // Transfer sites
             for (int i = 0; i < move_count; i++) {
-                site_t *site = to_move[i];
-                add_site_to_ring(root, site->site_name); // Assumes add_site_to_ring copies the site_name
-                free(site->site_name);
-                free(site);
+                add_site_to_ring(root, to_move[i]->site_name);
+                free(to_move[i]->site_name);
+                free(to_move[i]);
                 scavenged++;
             }
+            free(to_move);
 
-            free(to_move); // Free the temporary array
-
-            // Update child's CDLL head
-            if (child->site_list != NULL) {
-                child->site_list = find_cdll_head(child->site_list);
-            }
+            if (child->site_list) child->site_list = find_cdll_head(child->site_list);
         }
     }
 
-    // Recursively process left and right children if they exist
-    if (root->left != NULL) {
-        scavenged += scavenge_neighboring_rings(root->left, min_sites);
-    }
-    if (root->right != NULL) {
-        scavenged += scavenge_neighboring_rings(root->right, min_sites);
-    }
-
+    // Recursive calls with NULL checks
+    if (root->left) scavenged += scavenge_neighboring_rings(root->left, min_sites);
+    if (root->right) scavenged += scavenge_neighboring_rings(root->right, min_sites);
     return scavenged;
 }
+
 
 
 // Deallocate the entire network

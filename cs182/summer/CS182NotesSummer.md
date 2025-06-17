@@ -1,6 +1,6 @@
 # WEEK 1
 -----------
-## 6.16 NOTES
+## Chapter 1: IN CLASS
 **Proposition**: A declarative sentence that is either true or false.
 
 | Symbol | Meaning            | Description             |
@@ -11,6 +11,63 @@
 | p ⊕ q  | XOR (Exclusive OR) | "p OR q, but not both"  |
 | p → q  | Implication        | "If p, then q"          |
 | p ↔ q  | Biconditional      | "p if and only if q"    |
+##### Negation
+
+| p   | ¬p  |
+| --- | --- |
+| T   | F   |
+| F   | T   |
+##### And (Conjuction)
+
+| p   | q   | p ∧ q |
+| --- | --- | ----- |
+| T   | T   | T     |
+| T   | F   | F     |
+| F   | T   | F     |
+| F   | F   | T     |
+##### Or (Disjunction)
+
+| p   | q   | p ∨ q |
+| --- | --- | ----- |
+| T   | T   | T     |
+| T   | F   | T     |
+| F   | T   | T     |
+| F   | F   | F     |
+##### Exclusive Or
+
+| p   | q   | p ⊕ q |
+| --- | --- | ----- |
+| T   | T   | F     |
+| T   | F   | T     |
+| F   | T   | T     |
+| F   | F   | F     |
+##### Implication
+
+| p   | q   | p → q |
+| --- | --- | ----- |
+| T   | T   | T     |
+| T   | F   | F     |
+| F   | T   | T     |
+| F   | F   | T     |
+##### Biconditional
+$$
+
+$$
+
+| p   | q   | p ↔ q |     |
+| --- | --- | ----- | --- |
+| T   | T   | T     |     |
+| T   | F   | F     |     |
+| F   | T   | F     |     |
+| F   | F   | T     |     |
+
+**Converse**: q → p
+**Inverse**: ¬p → ¬q
+**Contropositive**: ¬q → ¬p
+
+**Tautology** - A compound proposition that always defaults to TRUE.
+**Contradiction**: A compound porposition that defaults to FALSE.
+**Contingency** - Neither Taultology or a Contradiction.
 ### PSO!
 1. (p → r) ∨ (q → r) = (p ∧ q) → r ?
 
@@ -55,3 +112,6 @@
 5. Evalute log 2sqrt(2) (1/64) = -4
 6. Find positive integer n for which:
 		log2(1) + log2(2) + log2(3) +... + log2(n) = 2026
+
+
+

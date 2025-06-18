@@ -60,3 +60,47 @@ float x, y, z;
 
 }
 ```
+
+version5
+```c
+/* 	version 5 of z = x * y
+	same as version 4 but uses separate
+	function multiply2() to perform multiplication */
+
+#include <stdio.h>
+
+float multiply2(float, float);
+
+void main()
+{
+float x, y, z;
+
+// read input
+  scanf("%f %f",&x,&y);
+
+// compute
+  z = multiply2(x,y);
+
+// print result
+  printf("result of %f * %f is %.3f\n", x, y, z);
+
+}
+
+
+/*	function multiply2(a,b) takes two
+	arguments of type float, multiplies a
+	and b, and returns the result to
+	the calling function */
+
+float multiply2(float a, float b)
+{
+float c;
+
+// multiply a with b
+// and store the result in local variable c
+  c = a * b;
+
+// return value of c to calling function
+  return c;
+}
+```

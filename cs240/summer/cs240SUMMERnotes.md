@@ -36,3 +36,27 @@ Imagine memory as a bunch of slots that allow you to place data like bytes. Each
 **How is this different than printf?**: main() calls printf() what to print on the terminal. It will print just the input of the variable. There is no need to store anything. Scanf needs to know gthe adress while pritf doesn't
 
 Segmentation Fault. You try to access a data value that the OS does not give access to. 
+
+version4
+```c
+/* 	version 4 of z = x * y
+	same as version 3 but supports
+	real numbers */
+
+#include <stdio.h>
+
+int main()
+{
+float x, y, z;
+
+// read input
+  scanf("%f %f",&x,&y);
+
+// multiply
+  z = x * y;
+
+// print result
+  printf("result of %f times %f is %f\n", x, y, z);
+
+}
+```

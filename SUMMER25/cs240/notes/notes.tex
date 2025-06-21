@@ -1,0 +1,119 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{listings}
+\usepackage{xcolor}
+
+\title{CS240 Notes}
+\author{Maninder (Kaurman) Kaur}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section*{Version 3}
+\begin{lstlisting}[language=C]
+/* version 3 of z = x * y
+   reads the numbers to be subtracted from keyboard
+   using the standard I/O library function scanf()
+   and outputs the result on the terminal
+   using printf() */
+
+#include <stdio.h>
+
+int main()
+{
+    int x;
+    int y, z;
+
+    // read input
+    scanf("%d %d", &x, &y);
+
+    /* compute multiplication */
+    z = x * y;
+
+    // print result
+    printf("%d * %d = %d\n", x, y, z);
+}
+\end{lstlisting}
+
+\texttt{main()} calls \texttt{scanf()} to do something for it; the two inputs that should be read from the user should be stored into \texttt{int x} and \texttt{y}. This is done by putting every function from \texttt{MAIN MEMORY}, where they get their own working area. It is allocated for the function to use, allowing \texttt{main()} to call and use \texttt{scanf()}. Passing functions means to use them.
+
+Alice and Bob are friends. She writes him two letters, placing them in mailbox 5 and 7 at the UPS office. Bob comes in later and opens 5 and 7 for each letter. Alice and Bob represent the main function and the memory, while the letters are the functions.
+
+Imagine memory as a bunch of slots that allow you to place data like bytes. Each slot allows 8 bits. The memory slots start at index 0 and go up to \( 2^{n}-1\) slots. Integers take up 4 bytes.
+
+\subsection*{How is this different than printf?}
+\texttt{main()} calls \texttt{printf()} to print on the terminal. It will print just the input of the variable. There is no need to store anything. \texttt{scanf} needs to know the address, while \texttt{printf} does not.
+
+\subsection*{Segmentation Fault}
+A segmentation fault occurs when you try to access a data value that the OS does not give access to.
+
+\section*{Version 4}
+\begin{lstlisting}[language=C]
+/* 	version 4 of z = x * y
+	same as version 3 but supports
+	real numbers */
+
+#include <stdio.h>
+
+int main()
+{
+    float x, y, z;
+
+    // read input
+    scanf("%f %f", &x, &y);
+
+    // multiply
+    z = x * y;
+
+    // print result
+    printf("result of %f times %f is %f\n", x, y, z);
+}
+\end{lstlisting}
+
+\section*{Version 5}
+\begin{lstlisting}[language=C]
+/* 	version 5 of z = x * y
+	same as version 4 but uses separate
+	function multiply2() to perform multiplication */
+
+#include <stdio.h>
+
+float multiply2(float, float);
+
+void main()
+{
+    float x, y, z;
+
+    // read input
+    scanf("%f %f", &x, &y);
+
+    // compute
+    z = multiply2(x, y);
+
+    // print result
+    printf("result of %f * %f is %.3f\n", x, y, z);
+}
+
+/*	function multiply2(a,b) takes two
+	arguments of type float, multiplies a
+	and b, and returns the result to
+	the calling function */
+
+float multiply2(float a, float b)
+{
+    float c;
+
+    // multiply a with b
+    // and store the result in local variable c
+    c = a * b;
+
+    // return value of c to calling function
+    return c;
+}
+\end{lstlisting}
+
+\texttt{printf()} works as follows: if there is a variable \texttt{x} and we assign it a value, to print it we would simply use \texttt{printf(\%d, x)}. However, with \texttt{scanf}, we would use \texttt{scanf("\%d", \&x)}. We use \& because we are not passing the value of \texttt{x}, but using the memory address itself to store the value.
+
+\end{document}

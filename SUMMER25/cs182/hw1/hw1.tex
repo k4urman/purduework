@@ -105,6 +105,32 @@
         \item \(((\neg p \lor q) \land \neg r) \lor (p \land \neg r)\)
         \item \((p \land (\neg q \lor r)) \implies (\neg r \land p)\)
     \end{enumerate}
+    \subsection*{Solution}
+    \begin{enumerate}[label=(\alph*)]
+        \item \((p \land (q \lor \neg p)) \land \neg q\) \\
+        \(((p \land q) \lor (p \land \neg p)) \land \neg q\) Distributive Laws \\
+        \(((p \land q) \lor F) \land \neg q\) Negation Laws \\
+        \((p \land q) \land \neg q\) Identity Laws \\
+        \(p \land (q \land \neg q)\) Associative Laws \\
+        \(p \land F\) Negation Laws \\
+        Contradiction as it is F due to Domination Laws, NOT SATISFIABLE
+        \item \(((\neg p \lor q) \land \neg r) \lor (p \land \neg r)\) \\
+        \((\neg p \land \neg r ) \lor (q \land \neg r) \lor (p \land \neg r)\) Distributive Laws \\
+        \((\neg r \land \neg p) \lor (\neg r \land p) \lor (\neg r \land q)\) Associative Laws \\
+        \((\neg r \land (\neg p \lor p)) \lor (\neg r \land q)\) Distributive Laws \\
+        \((\neg r \land T) \lor (\neg r \land q)\) Negation Laws \\
+        \(\neg r \land (\neg r \land q)\) Identity Laws \\
+        If p = T, q = T, and r = F, the expression is SATISFIABLE
+        \item \((p \land (\neg q \lor r)) \implies (\neg r \land p)\) \\
+        \(\neg (p \land (\neg q \lor r)) \lor (\neg r \land p)\) Logical Equivalences \\
+        \(\neg (p \lor (q \land \neg r)) \lor (\neg r \land p)\) De Morgan's Laws \\
+        \((\neg r \land p) \lor \neg p \lor (q \land \neg r)\) Associative Laws \\
+        \(((\neg p \lor \neg r) \land (p \lor \neg p)) \lor (q \land \neg r)\) Distributive Laws and Grouping \\
+        \(((\neg p \lor \neg r) \land T) \lor (q \land \neg r)\) Negation Laws \\
+        \(\neg p \lor \neg r \lor (q \land \neg r)\) Identity Laws \\
+        If p = F, q = T, and r = F, the expression is SATISFIABLE
+        
+    \end{enumerate}
 
 \clearpage
 \section*{Question 4}

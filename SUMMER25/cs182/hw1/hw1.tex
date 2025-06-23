@@ -70,7 +70,32 @@
         \item \((\neg(p\land q) \implies (\neg q \land p)) \lor (q \land \neg p)\)
         \item \(((\neg p \implies q) \land (q \lor (p \implies \neg q))) \lor (\neg q \implies \neg (p \land \neg q))\)
     \end{enumerate}
-
+    \subsection*{Solution}
+    \begin{enumerate}[label=(\alph*)]
+        \item \((\neg(p\land q) \implies (\neg q \land p)) \lor (q \land \neg p)\) \\
+        \((\neg p \lor \neg q \implies (\neg q \land p)) \lor (q \land \neg p)\) De Morgan's Law \\
+        \((\neg (\neg p \lor \neg q) \lor (\neg q \land p)) \lor (q \land \neg p)\) Logical Equivalences \\
+        \((p \land q \lor (\neg q \land p))  \lor (q \land \neg p)\) Double Negation and De Morgan's Law \\
+        \((p \land (q \lor \neg q)) \lor (q \land \neg p)\) Distributive  and Absorption Laws \\
+        \((p \land T) \lor (q \land \neg p)\) Negation Laws \\
+        \(p \lor (q \land \neg p)\) Identity Laws \\
+        \((p\lor q) \land (p \lor \neg p)\) Distributive Laws \\
+        \((p \lor q) \land T\) Negation Laws \\
+        \(p \lor q\) Identity Laws \\
+        Contingency as it is neither F or T
+        
+        \item \(((\neg p \implies q) \land (q \lor (p \implies \neg q))) \lor (\neg q \implies \neg (p \land \neg q))\) \\
+        \((\neg(\neg p \implies q) \land (q \lor (\neg(p \implies \neg q)))) \lor (\neg q \implies \neg (p \land \neg q))\) De Morgan's Laws \\
+        \(( p \lor q \land (q \lor (\neg p \lor \neg q)) \lor (\neg q \implies \neg p \lor  q)\) De Morgan's and Double Negation Laws \\
+        \((p \lor q \land ((q \lor \neg q) \lor \neg p)) \lor (q \lor \neg p)\) Distributive Laws and Grouping \\
+        \((p \lor q \land (T \lor \neg p)) \lor (q \lor \neg p)\) Negation Laws \\
+        \((p \lor q) \lor (q \lor \neg p)\) Domination and Identity Laws \\
+        \((p \lor \neg p) \lor (q \lor q)\) Grouping \\
+        \(T \lor q\) Negation and Idempotent Laws \\
+        Tautology as it ends with T through Domination Laws
+                
+        
+    \end{enumerate}
 
 \clearpage
 \section*{Question 3}

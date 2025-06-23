@@ -155,7 +155,14 @@
         \item \(\forall x(S(x) \land \neg N(x))\)
         \item \(\exists x (S(x) \land \neg N(x))\)
     \end{enumerate}
-
+    \subsection*{Solution}
+    \begin{enumerate}[label=(\alph*)]
+        \item \(\neg \exists (S(x) \implies N(x))\) means "there does not exist any value of x for which a square number in negative", which is NOT what we are asking for, even though all square numbers are positive so the expression is true.
+        \item \(\forall x(S(x) \implies \neg N(x))\) means "for all values of x every number is non-negative". Thus, this is the option we are looking for; CORRECT.
+        \item \(\forall x(S(x) \land \neg N(x))\) means "for all values of x every number is a square number AND non-negative", which is NOT what we are looking for, even though all square numbers are both expressions. We are looking for an implication like "a is b", not "a and b".
+        \item \(\exists x (S(x) \land \neg N(x))\) means "there does exist a value of x for whcih x is square and non-negative", which is NOT what we are looking for, even though there does exist value of x where they are square numbers are both expressions. We are looking for an implication like "a is b", not "a and b" AND looking for "for all", not "one such".
+    \end{enumerate}
+    
 \clearpage
 \section*{Question 6}
     \textbf{Which of the two expressions correctly describes \(\exists !xP(x)\), that is, "there exists a unique x such that P(x) is true"? Explain your answer.}

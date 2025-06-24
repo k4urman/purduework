@@ -11,7 +11,8 @@
 
 \maketitle
 
-\section*{Version 3}
+\section*{Week 1}
+\subsection*{Version 3}
 \begin{lstlisting}[language=C]
 /* version 3 of z = x * y
    reads the numbers to be subtracted from keyboard
@@ -49,7 +50,7 @@ Imagine memory as a bunch of slots that allow you to place data like bytes. Each
 \subsection*{Segmentation Fault}
 A segmentation fault occurs when you try to access a data value that the OS does not give access to.
 
-\section*{Version 4}
+\subsection*{Version 4}
 \begin{lstlisting}[language=C]
 /* 	version 4 of z = x * y
 	same as version 3 but supports
@@ -72,7 +73,7 @@ int main()
 }
 \end{lstlisting}
 
-\section*{Version 5}
+\subsection*{Version 5}
 \begin{lstlisting}[language=C]
 /* 	version 5 of z = x * y
 	same as version 4 but uses separate
@@ -115,5 +116,120 @@ float multiply2(float a, float b)
 \end{lstlisting}
 
 \texttt{printf()} works as follows: if there is a variable \texttt{x} and we assign it a value, to print it we would simply use \texttt{printf(\%d, x)}. However, with \texttt{scanf}, we would use \texttt{scanf("\%d", \&x)}. We use \& because we are not passing the value of \texttt{x}, but using the memory address itself to store the value.
+
+\newpage
+\section*{Week 2}
+\subsection*{Linking and Loading}
+
+    When we have a function like multiply2(). GCC will link the function statically, means that after being translated into machine code, it will be integrated into a.out. I called from these files printf() and scanf(), both pre-written code, which is an example of how often code for others and not just ourselfs. The code we make is deposited into a library to be used which is used in the process of Linking and Loading.
+
+    We will typically dynamically link. Lets use the example that we use borg02, the server will share all the machine code from some library, which reduces the memory consumption. One copy of a function in a library in the usr/ directories.
+
+    Loading is about loading a code segemnt to allow it to become an executable and loaded into main memory.
+
+    \subsection*{Version 1}
+    \begin{lstlisting}[language=C]
+// Program to illustrate content vs. address
+// of a local variable.
+
+#include <stdio.h>
+
+int main()
+{
+int x;
+
+  x = 7;
+  printf("%d\n",x);
+
+  // format %p is for printing address
+  printf("%p\n",&x);
+
+}
+    \end{lstlisting}
+
+    When running a.out of Version 1, the ouput integer is printed and then the adress of where it is held. 0x indicates that the adress is hexidecimal which allows 4-bit systems. Each slot is given a memory adress. We use the numbers 0-9 and letters A-F. (i.e. Look at hexidecimal computer conversion).
+
+    Each byte outputs 4 bits, and there are 12 bytes after 0x, indicating there will be 48-bits will be outputted in total.
+
+    \subsection*{Version 2}
+    \begin{lstlisting}[language=C]
+// Meaning of a pointer: a variable whose content is an address.
+
+#include <stdio.h>
+
+int main()
+{
+int x, *y;
+
+  x = 7;
+  printf("%d\n", x);
+  printf("%p\n", &x);
+
+  y = &x;
+  printf("%d\n", *y);
+  printf("%p\n", y);
+
+  // meaning of int **z?
+}
+    \end{lstlisting}
+
+    \subsection*{Version 3}
+    \begin{lstlisting}[language=C]
+// Meaning of a pointer: a variable whose content is an address.
+
+#include <stdio.h>
+
+int main()
+{
+int x, *y;
+
+  x = 7;
+  printf("%d\n", x);
+  printf("%p\n", &x);
+
+  y = &x;
+  printf("%d\n", *y);
+  printf("%p\n", y);
+
+  // meaning of int **z?
+}
+    \end{lstlisting}
+
+    \subsection*{Version 4}
+    \begin{lstlisting}[language=C]
+    // Use functions changeling1() and changeling2() to illustrate
+// passing by value vs. reference (i.e., address).
+
+#include <stdio.h>
+
+void changeling1(int);
+void changeling2(int *);
+
+int main()
+{
+int r;
+
+  r = 7;
+  changeling1(r);
+  printf("%d\n", r);
+
+  r = 9;
+  changeling2(&r);
+  printf("%d\n", r);
+
+}
+
+
+void changeling1(int x)
+{
+  x = 100;
+}
+
+
+void changeling2(int *y)
+{
+  *y = 200;
+}
+    \end{lstlisting}
 
 \end{document}

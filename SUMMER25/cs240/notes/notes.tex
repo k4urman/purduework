@@ -232,4 +232,117 @@ void changeling2(int *y)
 }
     \end{lstlisting}
 
+    \subsection*{Version 7}
+
+    \begin{lstlisting}[language=C]
+// Pointers and arrays: 1-D array.
+
+#include <stdio.h>
+
+int main()
+{
+int z[5];
+
+  z[0] = 100;
+  z[1] = 200;
+  z[2] = 300;
+  z[3] = 400;
+  z[4] = 500;
+
+  printf("%d\n",z[0]);
+  printf("%d\n",z[1]);
+  printf("%d\n",z[2]);
+  printf("%d\n",z[3]);
+  printf("%d\n",z[4]);
+
+  printf("%d\n",*z);
+  printf("%d\n",*(z+1));
+  printf("%d\n",*(z+2));
+  printf("%d\n",*(z+3));
+  printf("%d\n",*(z+4));
+
+  *z = 1;
+  *(z+1) = 2;
+  *(z+2) = 3;
+  *(z+3) = 4;
+  *(z+4) = 5;
+
+  printf("%d\n",z[0]);
+  printf("%d\n",z[1]);
+  printf("%d\n",z[2]);
+  printf("%d\n",z[3]);
+  printf("%d\n",z[4]);
+
+}
+    \end{lstlisting}
+
+Unlike making serveral different int values a,b,c, we make a array called z[3]where all the values are adjacent in the memory block. If z[1] if at adress 100, the next int value z[1] will be at adress 104, because int values are of 4 bytes.
+
+This 1-D array allows for random access which means that it makes the memory slots adjacent. The only memory adress we need to remember is the slot of index 0 (the starting).
+
+To access the value of z[0], we should call *z. It will automatically start at the starting location. If we wanted to access z[2], we would use *(x+2) (or *(x+8) because 2 ints is 4*2 bytes).
+
+\subsection*{Version 8}
+
+\begin{lstlisting}[language=C]
+// Pointers and arrays: valid vs. invalid memory.
+
+#include <stdio.h>
+
+int main()
+{
+int *z;
+
+  *z = 100;
+  *(z+1) = 200;
+  *(z+2) = 300;
+
+  printf("%d\n",*z);
+  printf("%d\n",*(z+1));
+  printf("%d\n",*(z+2));
+
+}
+\end{lstlisting}
+
+Notice how we don't have a definitive idea of where *z is pointing at. Because we don't know where the adress is, it will probably end in a segmentation fault.
+
+\subsection*{Version 9}
+
+\begin{lstlisting}[language=C]
+// Pointers, memory, and silent run-time errors.
+
+#include <stdio.h>
+
+int main()
+{
+int s[5];
+int i;
+
+  for(i=0; i<5; i++)
+	s[i] = i;
+
+  for(i=0; i<5; i++)
+  	printf("%d\n",s[i]);
+
+  // doing something sketchy
+  for(i=0; i<6; i++)
+	s[i] = i;
+
+  for(i=0; i<6; i++)
+	printf("%d\n",s[i]);
+
+}
+\end{lstlisting}
+
+Notice how there are only 5 slots in s[]. However, we are asking to go past that threshold in the for loops. This does not cause a crash, but practices such as these should not be normalized. These are called "silent errors".
+However, if we increase the max count from 6 to something higher, it will crash and give us a message saying "stack smashing detected; Terminated Abort".
+This is called \textbf{Stack Overflow}, because the function attempts to access outside of the memory slots allocated for the array.
+
+Memory slots hold a couple of things:
+\begin{enumerate}
+    \item Local Variables
+    \item Arguments
+    \item Return Addresses
+\end{enumerate}
+
 \end{document}

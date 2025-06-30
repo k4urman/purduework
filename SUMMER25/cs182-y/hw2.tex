@@ -167,4 +167,43 @@ Then, use proof by contradiction: suppose an integer solution exists.]}
         CLOSED FORM: \(30 * n!\)
     \end{itemize}
 
+
+\clearpage
+\section*{Question 8}
+    \textbf{Solve the following problems:}
+    \subsection*{Solution}
+    \begin{enumerate}[label=(\alph*)]
+        \item \textbf{We know \(\sum_{k=0}^{5}2a_{k}=30\) and \(\sum_{k=0}^{3}(a_{k}+3)=30\). Find the value of a0 and d} \\
+        \(\sum_{k=0}^{5}2a_{k}=30 \rightarrow 2\sum_{k=0}^{5}a_{k}=30 \rightarrow \sum_{k=0}^{5}a_{k}=15 \rightarrow 6a0+15d =15\) \\ \\
+        \(\sum_{k=0}^{3}(a_{k}+3)=30 \rightarrow \sum_{k=0}^{3}a_{k} + \sum_{k=0}^{3} 3=30 \rightarrow \sum_{k=0}^{3}a_{k} = 18 \rightarrow 4a0+6d=18\) \\ \\
+        This gives is the equations
+        \( \begin{cases}
+        6a0+15d=15 \\
+        4ao0+6d=18
+    \end{cases}\) \(\rightarrow \)
+    \( \begin{cases}
+        12a0+30d=30 \\
+        -12ao0-18d=-54
+    \end{cases}\) \\ \\
+    Which gets us \(d=-2\) and \(a0=7.5\) once subtracted and solved.
+
+        
+        \item \textbf{Find the closed form of \(S=\sum_{l=0}^{k}l*(\frac{1}{2})^l\)} 
+        \(S=\sum_{l=0}^{k}l*(\frac{1}{2})^l \rightarrow \sum_{l=0}^{k}x^l=\frac{1-x^{k+1}}{1-x} \rightarrow \sum_{l=0}^{k}lx^l= \frac{x(1-(k+1)x^k+kx^{k+1})}{(1-x)^2}\) \\
+        Now we plug in \(x=\frac{1}{2}\) \\
+        \(\sum_{l=0}^{k}l(\frac{1}{2})^l= \frac{\frac{1}{2}(1-(k+1)\frac{1}{2}^k+k\frac{1}{2}^{k+1})}{(1-\frac{1}{2})^2} 
+        \rightarrow
+        \sum_{l=0}^{k}l(\frac{1}{2})^l= \frac{\frac{1}{2}(1-(k+1)\frac{1}{2}^k+k\frac{1}{2}^{k+1})}{\frac{1}{4}}
+        \rightarrow
+        \sum_{l=0}^{k}l(\frac{1}{2})^l= \frac{2^{k+1}-k-2}{\frac{1}{4}}
+        \rightarrow \) \\
+
+        Which finally simplifies to: 
+        \(
+        2-\frac{4k+8}{2^{k+2}}
+        \)
+
+        
+    \end{enumerate}
+
 \end{document}

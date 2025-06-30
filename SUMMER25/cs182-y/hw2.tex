@@ -105,4 +105,28 @@ Answer the following questions.}
         \(2(2k^2 + 2k+4)\) Let the values in the parentheses be some integer, which no resembles 2k, just like \(n=2k\), which means it is even! We have proved the contrapositive.
     \end{enumerate}
 
+\clearpage
+\section*{Question 5}
+    \textbf{Prove that \(5x^2 +4y^2+20y+22=73\) has no integer solutions. [Hint: Try narrowing down the range of x or y (proof by cases) by completing the square.
+Then, use proof by contradiction: suppose an integer solution exists.]}
+    \subsection*{Solution}
+    \begin{enumerate}[label=(\alph*)]
+        \item[] \(5x^2 +4y^2+20y+22=73\) \\
+        \(5x^2 +4(y^2+5y)+22=73\) \\
+        \(5x^2+4(y^2+5y(\frac{5}{2})^2-(\frac{5}{2})^2)\) +22 =73 \\
+        \(5x^2+4(y^2+5y(\frac{5}{2})^2-\frac{25}{4})\) +22=73 \\
+        \(5x^2+4(y+\frac{5}{2})-3=73\) \\
+        \(5x^2+4(y+\frac{5}{2})=76\) \\
+        \(4(y+\frac{5}{2})^2=76-5x^2\) \\
+        \textbf{PROOF}: Proof by contradiction, there exists such integer solution. \\
+        \textbf{POSSIBLE INPUTS:} \(0,\pm 1,\pm 2,\pm 3\) \\
+        \(x = 0: 76 - 5 \cdot 0 = 76, \frac{76}{4} = 19\) \\
+        \(x = \pm 1: 76 - 5 \cdot 1 = 71, \frac{71}{4} = 17.75\) \\
+        \(x = \pm 2: 76 - 5 \cdot 4 = 56, \frac{56}{4} = 14\) \\
+        \(x = \pm 3: 76 - 5 \cdot 9 = 76 - 45 = 31, \frac{31}{4} = 7.75\) \\
+        Once we plug them in, we find out that none of the inputs for x provide a perfect square or integer output, meaning that \(5x^2 +4y^2+20y+22=73\) indeed has no integer solutions. \\
+        
+        
+    \end{enumerate}
+
 \end{document}

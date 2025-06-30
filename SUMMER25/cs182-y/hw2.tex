@@ -149,4 +149,22 @@ Then, use proof by contradiction: suppose an integer solution exists.]}
         Let the values in the parentheses be some integer, which resembles 2k, just like \(n=2k\), which means it is odd! We have proved the contrapositive.
     \end{itemize}
 
+\clearpage
+\section*{Question 7}
+    \textbf{Alice is studying a recently discovered cell. This cell is interesting because each cell splits into three new cells every hour. Bob is also interested in the cell, so Alice decided to give 40 cells to Bob at the end of each hour. \\
+    Let \(c_{n}\) be the number of cells that Alice has at the end of hour \(n\). Alice started the experiment with 30 cells. Answer the following questions.}
+    \subsection*{Solution}
+    \begin{itemize}
+        \item \textbf{Find the recurrence relation of \(c_{n}\)} \\
+        Let a=30 r=3 \\
+        BASIC: \(f_{0}=30\) \(f_{1} = 90\) \\
+        RECURSIVE: \(f_{n}=(f_{n-1} *3) -40\)
+        \item \textbf{Find the closed form of \(c_{n}\) you found in (a).} \\
+        \(a= 30\) \(c_{n}=ar^n\) a=30 r=3
+        \item \textbf{Alice is now curious about a different cell from the same family. Instead of splitting into 3 new cells, each mature cell now diverges into the number of hours, \(n\), since the experiment began. What will be the recurrence relation and closed-form of this cell? Alice started with 30 cells again but this time didn’t give any cells to Bob.} \\
+        BASIC: \(f_{0}=30\) \(f_{1}=30\) \\
+        RECURSIVE: \(f_{n}=(f_{n-1})*n\) \\
+        CLOSED FORM: \(30 * n!\)
+    \end{itemize}
+
 \end{document}

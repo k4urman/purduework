@@ -133,4 +133,19 @@
     \end{enumerate}
 
 
+\clearpage
+\section*{Question 7}
+
+    \textbf{Problem 7. (6 + 5 points) Hash functions can also be used for strings. One example is the polynomial rolling hash function. Our polynomial rolling hash function $h(s)$ is defined as follow:
+    \( h(s) = \left( \sum_{i=0}^{n-1} \text{val}(s[i]) \cdot p^i \right) \pmod{m} \)
+    where $n$ is the number of letters in the string $s$, \(\text{val}(s[i])\) is an integer value corresponding to the $i$ th letter of the string $s$ (A=1, B = 2, ..., Z = 26), $p$ is a prime constant $5$, and $m$ is the size of the table, let’s say 11. We want to insert [CAT, DOG, BIRD, PONY] in this specific order. Solve the following questions:}
+
+    \subsection*{Solution}
+    \begin{enumerate}[label=(\alph*)]
+        \item Calculate the initial hash index for each of the given keys without considering collisions. Are there any collisions?
+        \item Collisions are a common issue because we want to balance the memory usage with other considerations. There are different methods to deal with collisions. In this problem, we will explore one method called \textit{open addressing} in which we handle collisions by \textit{probing} (searching) through a sequence of alternative locations until we find an open spot. Consider the probing function $p(s, i) = (h(s) + 3i) \pmod{m}$ where we initially check $p(s, 0) = h(s)$ and then jump forward three slots at a time to try to find an open slot. In other words, if some other string is already stored in $p(s, 0) = h(s)$, then we check $p(s, 1) = (h(s) + 3) \pmod{m}$ and if that one is already full, we check $p(s, 2) = (h(s) + 6) \pmod{m}$ and so on until we find an open spot. The advantage of open addressing is that we can handle collisions without changing our approach of only storing one string per slot in the hash table. The disadvantage is that searching for a string is more complicated because we also have to check the alternative locations in order until we find that string or an open slot. Given $p(s, i) = (h(s) + 3i) \pmod{m}$, redo part (a) and compute the hash index for the same sequence of strings taking into account collisions and the probing function $p(s, i)$.
+    \end{enumerate}
+
+
+
 \end{document}

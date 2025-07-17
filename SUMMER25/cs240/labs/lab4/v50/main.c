@@ -2,6 +2,15 @@
 
 int main() {
   char filename[12]; //filename to store max 12 char
+  int N;
+
+  printf("Enter N and the filenam (max 11 char: )");
+
+  if(scanf("%d %11s", &N, filename) != 2) {
+    fprintf(stderr, "Error\n");
+    exit(1);
+  }
+
   int i, input_too_long = 0; // i used for loo and i_t_l as a bool check
   int ch; // check each char in filename
 
@@ -32,12 +41,17 @@ int main() {
     exit(1);
   }
 
+/*
   // findsize is called and error is given if there is a problem.
   int N = findsize(filename);
   if (N == -1) {
     printf("Error: cannot open file.\n");
     exit(1);
   }
+
+  */
+
+
 
   // u allocation, or error
   int *u = (int *)malloc(N * sizeof(int));

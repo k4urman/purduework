@@ -1,0 +1,73 @@
+
+CS 240 Summer 2025
+Lab 2: Pointers, passing by value vs. reference, 1-D arrays, and run-time errors (210 pts)
+Due: 07/02/2025 (Wed), 11:59 PM
+Objective
+The objective of this lab is to practice using pointers as they are commonly used in passing by reference and manipulation of 1-D arrays.
+
+Reading
+Read chapters 2 and 3 from K&R (textbook).
+
+Lab 2 Code Base
+
+The C code base for lab2 is available as a tarball at
+
+/homes/park/pub/cs240/lab2.tar
+
+on the Linux machines in one of our labs. If you are not able to access the tarball it implies that you are not logged onto a lab machine. Copy the tarball to your working directory of choice and unpack it using
+
+% tar xvf lab2.tar
+
+Under lab2, you will find subdirectories that contain versions of the example code discussed in class. As noted in class, always compile and run the final version on a Linux PC in our labs.
+
+Problems [210 pts]
+Problem 1 (20 pts)
+
+Compile the program in v1/ to generate the executable file main.bin (the .bin suffix is sometimes used for executable files in Linux/UNIX). Use the -o option of gcc to change the executable file name from the default a.out. Run main.bin four times. Specify what output you observe. What do the addresses output by printf() tell you about the local variable x of main() with respect to its location in main memory over the four runs? For the fourth run write out the bits of the hexadecimal address. Follow the default convention discussed in class where the first (i.e., least significant) bit is written right-most, the last (i.e., most significant) bit is written left-most. Count the number of bits represented by the hexadecimal output. Given that our lab machines are 64-bit Intel PCs what does the number of bits output indicate about how many bits are actually allowed for addresses by user programs? Modify main.c so that the statement that assigns constant 7 to x is removed. Compile and run main.bin four times. What do you observe? Is the value(s) that observed guaranteed to be the same across different runs? Explain your reasoning.
+Problem 2 (20 pts)
+
+Explain why the four printf() calls in v2/main.c output the values observed. Modify main.c by declaring a local variable of main, int **r, and use r to output the value of x with the help of y. Can you perform the task without involving y, i.e., using only x in an assignment statement for r? Describe what you find. Output the value of x using a local variable s of type, int ***. Do the same with local variable int ****t.
+Problem 3 (15 pts)
+
+Modify v3/mail.c so that the addresses of local variables a and b are output in addition to their values. Compile main.c and the name the executable main.exe (.exe is a suffix used by for executable files in Windows; Linux does not utilize suffixes to determine if a file contains executable code). Run main.exe. Explain the results you observe. Modify main.c so that the statement declaring a and b to be local to one() is removed. Recompile and run the modified program. Explain why the results of the two runs differ. Has removing a and b as local variables of one() made the addresses output by one() larger or smaller compared to before (i.e., when a and b were declared local to one())? Ignore function two().
+Problem 4 (20 pts)
+
+Compile and execute the C code main.c in v4/. Explain the output of the two calls to function printf() in main(). Modify main() so that (1) it prints to stdout the address of local variable r before calling changeling1(). Modify changeling1() so that it prints the address of the argument x before the statement that assigns 100 to x. Although the value of local variable r is passed as argument to changeling1(), are local variable r and the argument one and the same (i.e., occupy the same location in main memory)? Modify changeling2() so that the address of the argument y and the value contained therein is output before constant 200 is assigned to *y. Is the address of y the same as the address of local variable r of main()? Is the value contained at address y (i.e., value of y) the same as the address of r? What does the operation *y do so that when 200 is assigned the value stored at r is changed to 200?
+Problem 5 (20 pts)
+
+A continuation of Problem 4, make a copy of file main.c (the one containing the changes to changeling1() and changeling2() in v4/ and call it mainv2.c. Modify mainv2.c so that the source code of changeling1() is placed in its own file v4/changeling1.c and the code of changeling2() is placed in a separate file v4/changeling2.c. Compile the app involving the three functions main() in mainv2.c, changeling1() in changeling1.c, and changeling2() in changeling2.c to generate executable file changeling.bin (use the -o option of gcc). Run changeling.bin and verify that it works as before when all the functions were contained in a single file.
+Problem 6 (20 pts)
+
+The code in v6/ used conditional printf() calls with the help of CPP to locate where in main.c a statement causes segmentation fault. Explain what the binary search method discussed in class is for the example code main.c, and why it is efficient at locating run-time debugs even for functions containing many lines of code. If a piece of code, main.c, has N statements, how many steps in the binary search is needed in the worst-case to pinpoint the location of a run-time bug? In the case where N is 1000 (main.c has 1000 statements) how many steps are sufficient? What happens if you modify v6/main.c so that the newline character '\n' is removed from printf("ok 3\n")? Explain the reason for this behavior. Beside including newline at the end of a printf() call when debugging, what is another method that ensures debugging statements are always output when they are executed (i.e., a bug, in our case, segmentation fault occurs after the printf() call)?
+Problem 7 (20 pts)
+
+Based on the discussion of how we view 1-D arrays as being represented in main memory -- not the description provided in the textbook which is an optimization which we will ignore for the moment -- describe the layout of 1-D integer array of v7/main.c, int z[5], in main memory. Based on the memory layout explain why *(z+3) is equivalent to z[3]. Modify main() so that it outputs to stdout z and &z. Based on the output explain why we can deduce that the layout of the 1-D we discussed is incorrect. What is the optimization step carried out by gcc for variables declared as 1-D arrays? Note: When we employ dynamic memory allocation later in the course to create 1-D arrays at run-time the layout we discussed will be the correct description. The optimization performed by gcc is of minor relevance.
+Problem 8 (25 pts)
+
+Explain what the silent run-time error in the example code of v9/ is. In what sense is a silent run-time error worse than an error that causes an app process to crash (e.g., by triggering segmentation fault)? What happens if the bound of third for-loop is changed from 6 to 8? Explain the reason for the observed run-time behavior. What happens if you compile main.c with the gcc option -fno-stack-protector and execute a.out? Explain what you find. By default, in CS240, we will allow gcc to attempt to aid in coding by helping detect stack smashing, arguably the most notorious run-time bug that hackers have exploited over the past decades to compromise computing systems. In general, assistance provided by gcc only goes so far and programmers must ensure that run-time vulnerabilities are mitigated through careful quality control.
+Problem 9 (20 pts)
+
+Create a copy of main.c in v9/ and name it mainv2.c. Modify mainv2.c so that the 1-D integer array, s[5], is made global, and set the bound of the third and fourth for-loop to 500. Compile without the -fno-stack-protector option and execute the program. How is the behavior different from Problem 8? Explain your finding.
+Problem 10 (30 pts)
+
+For the 1-D array, char x[10], in v10/main.c to contain string "hello" how must the 10 bytes of x[10] be assigned? How many bytes of char x[10] are used for storing the string? What is the longest string that can be stored in x? You may use the library function strlen() (include header file <string.h>) to determine the length of a string given as its argument. Code your own version of the function strlen(), call it mystrlen(), in v10/mystrlen.c where the function prototype is int mystrlen(char *). The reason for the function prototype of strlen() returning a value of type size_t and the argument having the qualifier const will be discussed later in the course. Your implementation mystrlen() should work by looping over the characters of the string that is passed as argument until EOS character '\0' is detected. The loop count (determine if 1 must be substracted to conform with the length returned by legacy function strlen()) is returned by mystrlen() as the string length. Using your own test function main() in v10/maintest.c that calls mystrlen() with various strings (ensure that all arguments passed by main() to mystrlen() are indeed strings) check that mystrlen() works correctly.
+
+Bonus problem (20 pts)
+
+What happens in Problem 10 if mystrlen() is passed a 1-D char array that does not contain EOS to terminate a string? For example, maybe code in main() that prepared the string to be passed has a bug and did not insert '\0' after the last character of a string. How would you deal with this issue? Discuss your reasoning.
+
+The Bonus Problem is entirely optional. Bonus points count toward reaching 35% of the course grade contributed by lab assignments.
+
+Turn-in instructions
+
+Electronic turn-in instructions:
+
+i) For problems that require answering/explaining questions, submit a write-up as a pdf file called lab2.pdf. Place lab2.pdf in your directory lab2/. You can use your favorite editor subject to that it is able to export pdf files which many freeware editors do. Files submitted in any other format will not be graded. The TAs need to spend their time evaluating the content of your submission, not switching between editors or hunting down obscure document formats which wastes time and is in no one's interest.
+
+ii) We will use turnin to manage lab assignment submissions. In the parent directory of lab2, run the command
+
+turnin -c cs240 -p lab2 lab2
+
+You can verify/list your submission by running: turnin -c cs240 -p lab2 -v. Please double-check that you submitted what you intended to submit.
+
+Back to the CS 240 web page

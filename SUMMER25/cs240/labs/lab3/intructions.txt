@@ -1,0 +1,54 @@
+
+CS 240 Summer 2025
+Lab 3: Programming using pointers, 1-D arrays, and basic I/O (240 pts)
+Due: 07/09/2025 (Wed), 11:59 PM
+Reading
+Read chapters 4 and 5 from K&R (textbook).
+
+Lab 3 Code Base
+
+A tarball of lab3/ is available as
+
+/homes/park/pub/cs240/lab3.tar
+
+Unlike lab1 and lab2, the coding problems do not refer to code in lab3/. Instead, code in the subdirectories of lab3/ serve as examples and exercises whose lessons and skills are utilized to solve the assignment.
+
+Problems [240 pts]
+Problem 1 (80 pts)
+
+Create a directory v11/ under lab3. Code main() in v11/main11.c that declares a local 1-D character array of main(), char inputstr[LENUP], where LENUP is a macro set to 12 using CPP command #define. main() calls, int readinput(char *), coded in v11/readinput.c by passing inputstr as argument. readinput() reads from standard input using library function getchar() a sequence of ASCII characters not to exceed LENUP including '\n'; the newline character is generated when the ENTER/RETURN key is pressed on stdin, i.e., the keyboard. The characters are stored in the 1-D char array passed by the caller. If the number of characters exceeds LENUP readinput() stops reading and returns ERRINPUT to its caller where ERRINPUT is defined as -1 using #define. If the input is valid -- i.e., does not exceed LENUP -- the '\n' character is replaced by '\0' to indicate end-of-string. readinput() returns the number of characters read inclusive '\0'. main() checks the return value readinput(). If it is ERRINPUT, main() outputs a suitable error message to stdout and returns 1 to its caller. Otherwise, main() calls function, void printoutput(int, char *), coded in v11/printoutput.c where the first argument specifies the value returned by readinput() and the second argument is the 1-D char array inputstr. printoutput() outputs to stdout the value of the first argument and the string passed as second argument. Test and verify that your code works correctly.
+Problem 2 (30 pts)
+
+A continuation of Problem 1, create a subdirectory v12/ under lab3/. Copy the code in v11/ to v12/. Instead of declaring the function prototypes of readinput() and printoutput() directly in main11.c, create a header file, funcs11.h that contains the declarations. Also, place all #define statements inside the header file. Use CPP command #include the incorporate funcs11.h into main11.c. Create Makefile in v12/ so that compilation and software maintenance is automated. As discussed in class, by default, all *.c files should have counterpart *.o object files generated. Name the executable main12.bin in place of a.out. Your Makefile should support running 'make clean' which deletes all object files and the executable binary while keeping the source files intact. Test and verify that your implementation works correctly.
+Problem 3 (50 pts)
+
+A continuation of Problem 2, create subdirectory lab3/v13 and copy the code from v12/. Compile your code and execute main12.bin to double check that it works correctly. After running make, do not run 'make clean' so that the object files are preserved in v13/. Then modify readinput() in readinput.c so that instead of the code involving calls to getchar() a single call to scanf() is made, scanf("%s", x), where x is the argument passed by the caller of readinput(). readinput() uses the string library function, strlen(), to determine string length which is returned to its caller. Since we are not modifying main() and printoutput() the value returned by readinput() must be consistent with what is expected by legacy code main(). Use the man command to check what value strlen() returns, in particular, whether it includes the EOS character. Depending on the value returned by strlen() make any adjustment needed so that the value returned by readinput() is backward compatible with its original version in Problem 1. Note that the man page of strlen() will specify any header file(s) that must be included when strlen() is utilized.
+
+Test your code with various input and describe what you find. Discuss and explain your finding in lab3.pdf. The goal of your testing is to assess correctness and reliability of the modified app under diverse user input.
+Problem 4 (80 pts)
+
+Create subdirectory lab3/v14 and code an app, fileprops, that reads a filename (a sequence of ASCII characters) from stdin where filename cannot exceed 14 characters excluding EOS. A filename may not contain blank spaces. If either condition is violated fileprops outputs a suitable error message to stdout indicating which contraint(s) was violated and calls exit(1) to terminate the running program. Reading a filename from stdin and opening it for reading is performed by a function, FILE *openfile(void), coded in v14/openfile.c. If the filename is valid but opening the file using fopen() fails, openfile() returns NULL to the caller. Otherwise, it returns the file pointer returned by fopen(). If the filename is valid, openfile() stores it as a string in global variable, char inpfilename[15].
+
+main() in v14/main14.c calls openfile(). If the return value is NULL, main() outputs a suitable message to stdout then returns to its caller with value 1. Otherwise, main() calls function, unsigned int checkprops(FILE *, int *), coded in v14/checkprops.c where the first argument is the file pointer of the opened file and the second argument is a pointer to local variable of main() of type int. checkprops() inspects the content of the file byte by byte by calling fgetc() until the end of the file is reached. The content of the file need not be ASCII (i.e., may contain one or more bytes whose value is strictly greater than 127). checkprops() returns the size of the file (in bytes) which may be 0 if the file is empty. While looping through the bytes of the file checkprops() counts how many bytes have values greater than or equal to 128 (i.e., bytes containing non-ASCII values). checkprops() communicates this count to its caller main() through the second argument. Note that EOF is not part of the content of a file (in contrast to '\0' or EOS which is part of a string) but an indicator (defined as -1) that the end of a file has been reached. This is analogous to using ERRINPUT in Problem 1, also defined as -1, to indicate that there is an error condition.
+
+After checkprops() returns, main() calls a function, printprops() coded in v14/printprops.c to output to stdout the name of the file, its size, how many bytes are ASCII characters, and its percentage (e.g., 100.0% if the entire file is ASCII) output as float with one digit after the decimal point. The function prototype of printpros() is for you to determine. Explain in lab3.pdf your decision. Use a header file (choose a name) included in main14.c to declare the functions used by main(). Use Makefile to compile your code in v14/. Test and verify that you implementation works correctly.
+
+Note: fgetc() returns a value of type INT, not char, so that it can communicate when the end of a file has been reached through value -1. But for this condition the int value returned by fgetc() contains bit value 0 in all bit positions but for the least significant 8 bits which represent the bits of the data byte read by fgetc() from a file.
+
+Bonus problem (30 pts)
+
+Create subdirectory lab3/v15. Modify your code of Problem 1 so that char inputstr[LENUP], which is local to main(), is made global. Modify the function prototypes of readinput() and printoutput() to benefit from this change which reduces overhead stemming from argument passing. Test and verify that your code works correctly. In general, when is making a variable (or data structure) global preferable to making it local to a function? Does it apply to Problem 1? Is checking whether a string input overruns a char array more critical when the array is global or local? Discuss your reasoning in lab3.pdf.
+
+Turn-in instructions
+
+Electronic turn-in instructions:
+
+i) For problems that require answering/explaining questions, submit a write-up as a pdf file called lab3.pdf. Place lab3.pdf in your directory lab3/. You can use your favorite editor subject to that it is able to export pdf files which many freeware editors do. Files submitted in any other format will not be graded. The TAs need to spend their time evaluating the content of your submission, not switching between editors or hunting down obscure document formats which wastes time and is in no one's interest.
+
+ii) We will use turnin to manage lab assignment submissions. In the parent directory of lab3, run the command
+
+turnin -c cs240 -p lab3 lab3
+
+You can verify/list your submission by running: turnin -c cs240 -p lab3 -v. Please double-check that you submitted what you intended to submit.
+
+Back to the CS 240 web page

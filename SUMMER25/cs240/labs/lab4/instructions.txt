@@ -1,0 +1,70 @@
+
+CS 240 Summer 2025
+Lab 4: Manipulating bits and bytes of files, dynamic memory allocation (240 pts)
+Due: 07/16/2025 (Wed), 11:59 PM
+Objective
+
+The objectives are, one, to read bytes from files (text and binary) and modify the content by manipulating bits, two, employ dynamic memory allocation to read 2-D data and store in main memory in a space efficient manner.
+
+Lab 4 Code Base
+The C code base for lab4 is available as a tarball
+
+/homes/park/pub/cs240/lab4.tar
+
+on our lab machines. The code in the subdirectories of lab4/ serve as coding exercises whose lessons and skills are utilized to solve this assignment.
+
+Problems [240 pts]
+
+Important: When implementing solutions for Problems 1 and 2, please only utilize techniques covered thus far in class. This is a constraint that requires one to work within the boundaries allowed by a given tool set. Invoking techniques including calls to library functions not covered in class will incur significant penalty points.
+Problem 1 (120 pts)
+
+Write a program, filescramble, that scrambles the content of a file and saves the encrypted file in a new file with postfix "_y" if the input filename does not end in "_y". If the input filename does end in postfix "_y" it is stripped from the input filename and made the output filename. For example, if the input filename is "data.in" then the scrambled filename is "data.in_y. If the input filename is "howdy_y" then the scrambled filename becomes "howdy". filescramble reads from stdin a filename of size MAXFILENAME - 3 where MAXFILENAME is defined as 18 in a separate header file. Unless specified, it is up to you to choose names for variables and files. Annotate your code so that a C programmer can follow and understand what it does and how it works.
+
+Input processing. Create subdirectory v30/ wherein filescramble is implemented. main() coded in v30/main.c calls, int inputproc(FILE **, FILE **), coded in v30/inputproc.c where the two arguments are addresses (i.e., pointers) of local variables of main(). inputproc() reads a sequence of characters from stdin using getchar() which are stored in a local char array of size MAXFILENAME. If any of the following conditions hold then the input is deemed invalid and a suitable error message is output to stdout followed by exit(1) to terminate the app: number of characters (including '\n') exceeds MAXFILENAME - 3; input contains a space ' ' character (i.e., 33rd character in the ASCII table); input contains an upper case character. If the filename is deemed valid inputproc() converts the input into a string and calls fopen() to open the specified file for read. If successful, the file pointer returned by fopen() is stored at the addressed passed in the first argument of inputproc(). If unsuccessful, a suitable error message is printed to stdout followed by exit(1). Consider the scenario where a user just presses the ENTER/RETURN key without entering a file name. Handle this scenario in a reasonable manner and describe your method in lab4.pdf.
+
+After reading a valid filename and successfully opening it for read, inputproc() inspects the last two characters of the filename before '\0' to check if they equal '_' and 'y', respectively. If so, the postfix is stripped by overwriting '_' with '\0'; otherwise, the postfix is appended to the input followed by '\0' to turn the input into a string. Be careful when considering what "appending" the postfix entails. inputproc() counts the number of characters excluding the postfix "_y" (if there is one) and EOS; the count is returned to its caller (i.e., main()). For example, if the original input from stdin was "myfile" and the processed input "myfile_y" then the return value is 6. The same goes if the original input was "myfile_y" and the processed input "myfile". Before returning, inputproc() calls fopen() to open the output file (i.e., processed input string) for write whose file pointer is stored at the address passed as second of inputproc(). If fopen() fails, exit(1) is called after printing a suitable error message to stdout. If inputproc() returns to its caller, main()'s two local variables of type FILE * whose addresses were passed to inputproc() contain a file pointer to a file that has been opened for read and a file pointer to a file that has been opened for write.
+
+Initial bit position to flip. When inputproc() returns to main(), main() uses the return value to calculate an integer in the range 0, 1, 2, ..., 7 by performing modulo 8 arithmetic operation. For example, if the value returned by inputproc() is 11 then modulo 8 yields 3. We will refer to this as the initial bit position to flip which is stored in local variable unsigned short ibp. Then main() calls, void fileproc(FILE *, FILE *, unsigned short), coded in v30/fileproc.c where the first two arguments are the local file pointers of the two files opened by inputproc(), the third argument is the value of ibp.
+
+Scrambling file content. fileproc() uses fgetc() to read the bytes of the input file byte-by-byte until EOF. For the first byte, fileproc() uses bit processing techniques discussed in class to flip the k'th bit where k is the third argument of fileproc(). For example, if the first byte contains bits 00000001 and ibk (the value of k) is 3, then flipping bit position 3 changes the byte value to 00001001. Note that bit positions are counted from 0 (least significant bit) to 7 (most significant bit). The byte whose k'th bit has been flipped is written to the file passed as second argument of fileproc(). k is incremented followed by modulo 8 operation. In the above example, k++ yields 4, and k = 4 (mod 8) equals 4. For the second data byte of the input file read by fgetc() (assuming its length is at least 2 bytes) updated bit position k's bit value is flipped. This loop repeats until all bytes of the input file have been scrambled and written to the output file. After fileproc() returns to main(), main() outputs a success message to stdout and executes return to terminate.
+
+Create Makefile in v30/ to compile, link, and generate executable file filescramble. Test and verify that your app works correctly on both ASCII and binary files. Note that running filescramble once scrambles the content of a file, running it again on the scrambled file unscrambles it yielding the original file. This is a quick but insecure way of encrypting the content of a file. For us, this is primarily an exercise to practice argument passing, basic file I/O, and bit processing. After opening a file using fopen() if the returned file pointer is not needed anymore please call fclose() to close the file.
+Problem 2 (120 pts)
+
+Code an app, outerproduct, in v40/ that reads in two integer vectors, calculates and outputs their outer product. outerproduct reads a filename from stdin using getchar() that must not exceed 12 characters including EOS. This task is performed by main() (coded in v40/main.c) and the filename stored in a local char array. If a filename exceeds the length constraint an error message is output to stdout and exit(1) called to terminate outerproduct. main() calls, int findsize(char *), implemented in v40/findsize.c that takes the filename as argument and returns the dimension of the two integer vectors. findsize() returns -1 if a problem has been encountered. If the return value is -1 main() outputs a suitable message and calls exit(1) to terminate.
+
+Input data integrity and dimension check. findsize() calls fopen() to open a file with the filename specified in the argument to read. If fopen() fails, findsize() returns -1. The goal of findsize() is two-fold: one, check if the data file meets a specific format requirement, and two, determine the dimension of two integer vectors contained in the data file. If the format requirement is not met, findsize() returns -1. Otherwise it returns the dimension, i.e., size of the input vectors. The format of a file should be a sequence of lines terminated by '\n' where each line contains two integers separated by a space. For example,
+
+10 12
+9993 7
+401 682
+
+is well-formed as it is comprised of three lines where each line contains two integers separated by a space. The first two lines contain '\n', the last line at the end of the file does not. If it does, the file is considered malformed and findsize() returns -1. findsize() uses fgetc() to read the content of the file byte-by-byte. The dimension or size is determined by counting the number of '\n' characters plus 1. To determine if a file meets the format specification, each byte read before a newline character (or EOF if at the last line) must be a numeral character '0', '1', ..., '9' and contain a single space character ' ' that separates two numeral characters. Any other condition triggers a format specification violation and findsize() returns -1. Note that integers with leading 0's are allowed in C. For example, 00541 is read as 541 by code snippet, int x; scanf("%d", &x). Before findsize() returns it closes the file by calling fclose().
+
+Heap allocation. When findsize() returns a dimension N (an integer greater or equal to 1), main() uses malloc() to allocate heap memory for three local variables: int *u, *v, **z. u will be used to read in the values of the first vector, v the second vector, and z will be a 2-D integer array of size NxN where the outer product of the two vectors will be stored. If malloc() fails, main() outputs a suitable error message to stdout and calls exit(1). As discussed in class, malloc() does not require explicit type conversion to work correctly, but we will require it in main() as an exercise. After allocating dynamic memory to u, v, z, main() calls, void readvectors(int, char *, int *, int *) coded in v40/readvectors.c, where the first argument is vector size N, the second argument specifies the filename, the third and fourth arguments specify u and v. readvectors() calls fopen() to open the file to read and uses a for-loop to read the N elements of the two vectors into u and v by using fscanf(). We will assume that readvectors() cannot fail. In general, this may not hold since the input file may be deleted by outside events in-between the calls to findsize() and readvectors().
+
+Outer product. After readvectors() returns, main() calls, void outprodcalc(int, int *, int *, int **), coded in v40/outprodcalc.c where the first argument is dimension N, the second and third arguments u and v, the fourth argument z where the outer product of u and v will be stored. The outer product of u and v is defined as z[i][j] = u[i]v[j] where i and j range over 1, 2, ..., N; hence an outer and inner for-loop will suffice to calculate the values of the 2-D int array z.
+
+Print result. After outprodcalc() returns, main() calls, void printres(int, int **), coded in v40/printres.c to output the values of the 2-D int array z to stdout. The first argument is dimension N, the second argument z.
+
+As in Problem 1, annotate your code. Create Makefile in v40/ to compile, link, and generate executable outerproduct. Test and verify that your app works correctly.
+
+Bonus problem (25 pts)
+
+Create subdirectory v50/. A variation of Problem 2, modify main() in v50/main.c so that it first reads from stdin an integer (dimension N) followed by a filename. Use scanf() to perform this task. The modified version skips performing integrity check of the data file (i.e., does not call findsize()). All the other parts of the app code remain unchanged. Copy the content of v40/ into v50/ including .o object files generated by make. Only edit main.c. Running make should entail recompiling main.c only, linking main.o with the existing object files to generate an updated executable outerproduct. Test and verify that your implementation works correctly.
+
+The Bonus Problem is entirely optional. Bonus points count toward reaching 35% of the course grade contributed by lab assignments.
+
+Turn-in instructions
+
+Electronic turn-in instructions:
+
+i) For problems that require answering/explaining questions, submit a write-up as a pdf file called lab4.pdf. Place lab4.pdf in your directory lab4/. You can use your favorite editor subject to that it is able to export pdf files which many freeware editors do. Files submitted in any other format will not be graded. The TAs need to spend their time evaluating the content of your submission, not switching between editors or hunting down obscure document formats which wastes time and is in no one's interest.
+
+ii) We will use turnin to manage lab assignment submissions. In the parent directory of lab4, run the command
+
+turnin -c cs240 -p lab4 lab4
+
+You can verify/list your submission by running: turnin -c cs240 -p lab4 -v. Please double-check that you submitted what you intended to submit.
+
+Back to the CS 240 web page

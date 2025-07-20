@@ -338,11 +338,155 @@ Notice how there are only 5 slots in s[]. However, we are asking to go past that
 However, if we increase the max count from 6 to something higher, it will crash and give us a message saying "stack smashing detected; Terminated Abort".
 This is called \textbf{Stack Overflow}, because the function attempts to access outside of the memory slots allocated for the array.
 
-Memory slots hold a couple of things:
+Let's use the example of main() and multiply2(). If the functions are in the same file, then the memory allocated for them in the stack will be next to one another. Each of the functions hold the specific memory slots hold the following things:
 \begin{enumerate}
     \item Local Variables
     \item Arguments
     \item Return Addresses
 \end{enumerate}
+
+A \textbf{canary} is a special bit address that is placed around a return addresses to stop malicous overriding. If the canary is the same from before, it will run, otherwise if comprimised, it will refuse to run due to stack smashing.
+
+Despite being helpful, canaries do slow down the program. If you run \texttt{gcc -fno-stack-protectir main.c}, it will ovveride the stack smashing error.
+
+\subsection*{Version 10}
+\begin{lstlisting}[language=C]
+// Basic string processing.
+
+#include <stdio.h>
+
+int main()
+{
+char x[10];
+int i;
+
+  x[0] = 'P';
+  x[1] = 'u';
+  x[2] = 'r';
+  x[3] = 'd';
+  x[4] = 'u';
+  x[5] = 'e';
+  x[6] = '\0';
+
+  printf("%s\n", x);
+
+}
+\end{lstlisting}
+
+
+The \textbackslash0 character is called the "end of string" or simply, EOS. All strings end with the EOS and the EOS lets the computer know that its a string.
+
+\section*{Week 3}
+\subsection*{Version 5}
+\begin{lstlisting}[language=C]
+// Another passing by address/reference example.
+
+#include <stdio.h>
+
+void changeval(int *);
+
+int main()
+{
+int s;
+
+  s = 3;
+
+  printf("inside main():\n");
+  printf("value of s = %d\n", s);
+  printf("address of s = %p\n", &s);
+  printf("\n");
+
+  // jump to changeval()
+  changeval(&s);
+
+  printf("back to main():\n");
+  printf("value of s = %d\n", s);
+  printf("address of s = %p\n", &s);
+
+}
+
+
+void changeval(int *t)
+{
+  printf("inside changeval():\n");
+
+  // where does argument t live?
+  printf("address of argument t %p\n", &t);
+
+  // what is the value of argument t?
+  printf("value of argument t %p\n", t);
+  printf("\n");
+
+  *t = 99;
+}
+\end{lstlisting}
+
+\section*{Week 4}
+If the most significant bit is 0 in a 8 bit (byte), it is a ASCII character. We humans use ASCII to visably use, such as the words on our keyboard. If 0 is the first bit, there are 7 other slots for a 1 or 0 to be given. Thus, there is \(2^7=128\) possible combinations. If the bit is over the 127 permutations (cause we start at index 0), then it will have a most significant bit starting with 1. \newline
+1 = Non-ASCII, 0 = ASCII and this logic works in all files.\newline
+TIP: use \texttt{\% man (2 or 3 or neither) \{inset function of command\}} to get all the documentation from the terminal since we have downloaded C. 
+:
+
+\subsection*{main4.c}
+
+\begin{lstlisting}[language=C]
+#include <stdio.h>
+#include <stdlib.h>
+
+int main() {
+FILE *fp;
+
+  fp = fopen("abcv2.dat", "w");
+  if(fp == NULL) {
+	fprintf(stderr, "File could not be opened.\n");
+	exit(1);
+  }
+
+  fputc('a', fp);
+  fputc('b', fp);
+  fputc('c', fp);
+
+}
+\end{lstlisting}
+
+The above creates a file object and stores the contents of abcv2.dat into it. The w mode allows for writing. However, is there is no file or is corrupted, it will return a error message. \newline
+After that, it will place abc into the file. It appends to the end of file, that is why it goes into the line abc. \newline
+\[\texttt{fputc("[content to append]", [file to be placed in])}\]
+
+\subsection*{main5.c}
+
+\begin{lstlisting}[language=C]
+#include <stdio.h>
+#include <stdlib.h>
+
+int main() {
+FILE *fp;
+char filename[100];
+int x, count;
+
+  scanf("%99s", filename);
+
+  fp = fopen(filename, "r");
+  if(fp == NULL) {
+	fprintf(stderr, "File could not be opened.\n");
+	exit(1);
+  }
+
+  count = 0;
+  while((x = fgetc(fp)) != EOF)
+	count++;
+
+  printf("Size in bytes: %d\n", count);
+
+}
+\end{lstlisting}
+
+In this code, we count each character. Starting by loading up fp with a file, we iterate in a while loop until the file ends with EOF. For each character, we add a number to our counter.
+
+\section*{Week 5}
+A left shift if \texttt{~0 << 1} will always introduce a 0 in the front.
+ANDing a bit often "squashes" it and makes it 0.
+unsigned means int but ignore the first number, or the sign.
+
 
 \end{document}

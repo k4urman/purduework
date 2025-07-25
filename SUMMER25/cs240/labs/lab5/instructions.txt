@@ -1,0 +1,124 @@
+
+CS 240 Summer 2025
+Lab 5: Command-line arguments and structures: integration with dynamic memory allocation, bit processing, and file I/O (270 pts)
+Due: 07/23/2025 (Wed), 11:59 PM
+Objective
+
+The objective of this lab is to practice using of command-line arguments which is an integral part of C programs, and utilize struct to build custom data structure which are allocated using dynamic memory allocation. The techniques will be integrated with dynamic memory allocation, bit processing, and file I/O.
+
+Reading
+Read chapter 6 from K&R (textbook).
+
+Lab 5 Code Base
+The C code base for lab5 is available as a tarball
+
+/homes/park/pub/cs240/lab5.tar
+
+on the lab machines. The code in the subdirectories of lab5/ serve as coding exercises whose lessons and skills are utilized to solve this assignment.
+
+Problems [270 pts]
+
+Important: When implementing solutions for the problems, please only utilize techniques covered thus far in class. This is a constraint that requires one to work within the boundaries allowed by a given tool set. Invoking techniques including calls to library functions not covered in class will incur significant penalty points.
+Problem 1 (120 pts)
+
+Suppose a text file contains ASCII characters '0' and '1' representing bits in human readable form. For example, a text file input.dat may contain 1111111100000000 where file size is 16 bytes (8 '1' characters followed by 8 '0' characters). The content of input.dat can be compressed into a binary file output.dat of size 2 bytes since the first 8 bytes of input.dat can be represented by the 8 bits of a single byte, similarly for the next 8 bytes of input.dat which can be encoded in the 8 bits of a second byte. output.dat is a binary file since the most significant bit of a byte need not be 0. In the above example, the most significant bit of the first byte of output.dat is 1. Unpacking a binary file entails the reverse action of writing the bit values of bytes in an input file to an output file which contains only ASCII characters '0' and '1'. When unpacking -- the reverse operation of packing -- the last byte of a binary input file plays a special bookkeeping role which will be explained below. For the above example, the packed file will comprise of three bytes, the first byte containing 8 bits all set to value 1, the second byte whose bits are all set to 0, and the third byte whose value is 8 (i.e., bit pattern 00001000) which indicates that the last data byte (i.e., second byte whose bits are all 0) does not have any fillers or junk bits. Since the size of an unpacked file need not be a multiple of 8, the bookkeeping byte is needed to specify how many bits of the last data byte actually encode data.
+
+App interface. Create a subdirectory v15/. Code an app, packbin2bit, that takes three command line arguments: a character where 'p' means pack and 'u' means to unpack a file; a string specifying the name of an input file; a string specifying the name of an output file. For example, % packbin2bit p input.dat output.dat, commands the app to compress the ASCII text file input.dat containing ASCII characters '0' and '1' only into a binary file output.dat where the content of input.dat are packed into the bits of output.dat. If the command-line arguments are invalid then packbin2bit outputs a suitable error message to stdout and calls exit(1) to terminate. This includes the first command-line argument not being a single character 'p' or 'u' or there being more than 3 command-line arguments (not counting the app name itself). main() uses fopen() to open the input file for read and the output file for write. If either operation fails, packbin2bit outputs a suitable error message to stdout and terminates. As usual, place main() in its own file v15/main.c.
+
+Packing operation. If the first command-line argument is 'p' then main() calls, int packfile(FILE *, FILE *), coded in v15/packfile.c where the arguments specify the file pointers of the input and output files, respectively. packfile() tries to read the first character of the input file using fgetc(). If the file is empty, packfile() prints a suitable message to stdout and calls exit(1). The same goes if the character read is not '0' or '1'. packfile() uses a local variable, unsigned int r, initialized to 0 to encode the first 8 bytes of the input file into the 8 bits of first byte of the output file. It does so by OR'ing r with 0x00000001 (i.e., 1) if the input byte was '1' or OR'ing r with 0x00000000 (i.e., 0) if it was '0'. The latter operation is superfluous since r has been initialized to 0. Unless the ASCII character read from the input file is the 8'th byte or EOF has been reached, r is shifted left by one bit position after the OR'ing operation. For example, if the first character of the input file is '1' then r becomes 0x00000002 following the shift operation. After 8 bytes of the input file have been packed into the first 8 bits of r -- note that the first byte of the input file is encoded as the 8'th bit of r (i.e., bit position 7 counting from 0) -- fputc() is called to write the first byte of r (note that r's size is 4 bytes) into the output file. r is then re-initialized to 0 and the next 8 bytes from the input file are read and processed so that they are compacted into the 8 bits of the next byte of the output file.
+
+If the size of the input file is not a multiple of 8 then a boundary condition arises that must be handled. For example, if the input file contains 19 bytes then 16 bytes are packed into 2 bytes of the output file but the third byte of the output file will use up only 3 bits to encode the remaining 3 bytes of the input file. We must remember that the last 5 bits of the third byte of the output file are junk bits to be ignored. We will do so by writing the decimal value 3 as the fourth (and last) byte of the output file using fputc(). That is, write the number of bits used to encode the remainder bytes (in this case, 3) as the last byte. Thus the size of the output file will be the size of the input file divided by 8 rounded up (in the above example 3 since 19/8 = 2.375), plus 1 (hence total 4). packfile() returns the size of the output file to its caller (in our case main()). Thus the last byte of the output file when packing is not data but bookkeeping information. If the filesize is a multiple of 8 then the last byte's value is 8 indicating that all 8 bits of the last data byte in the packed file (i.e., last byte of the file excluding the bookkeeping byte) encode '0' or '1' byte values of the unpacked file. If packfile() returns, main() outputs a message indicating successful compression of the input file along with the size of the output file (including the extra bookkeeping byte). main() closes the input and output files then returns 0 to terminate the app.
+
+Unpacking operation. If the first command-line argument is character 'u' then main() opens the input file and uses fgetc() to read the bytes of the file until the last byte of the file whose value is stored in a local variable int validbitlen. Note that the last byte of a packed file is booking data used to identify junk bits if the size of the unpacked file is not a multiple of 8. main() then closes and reopens the input file which rewinds the file pointer so that fgetc() will read the first byte of the file. Later in the course we will consider file I/O operations that involve moving around the content of a file.
+
+main() calls, int unpackfile(int, FILE *, FILE *), coded in v15/unpackfile.c where the first argument is validbitlen and the last two arguments are the file pointers of the input and output files, respectively. unpackfile() reads the content of the binary input file byte-by-byte using fgetc(). For each byte, unless it is the last byte, unpackfile() iterates over its 8 bits from most significant to least significant bit, writing the ASCII character '0' to the output file if a bit value is 0, writing '1' if the bit value is '1'. Thus the compressed content of the binary file is expanded to its approximately 8-fold larger output text file. Iterating over the 8 bits of a byte from the input file is performed by inspecting a relevant bit position by right shifting to the first bit position and using a mask of value 1. For the last data byte of the input file (i.e., second to last byte of the file since the last byte is the bookkeeping byte), only the first validbitlen bits are converted to ASCII characters and written to the output file. unpackfile() returns the size (in bytes) of the output file. When packfile() returns, main() outputs a message indicating successful expansion of the input file along with the size of the output file. main() closes the input and output files then returns 0 to terminate the app.
+
+Create Makefile in v15/ to compile, link, and generate executable file packbin2bit. Annotate your code with comments aimed at allowing a C programmer to understand how it works. Test and verify that your app works correctly on both valid/invalid command-line arguments and valid/invalid input files. Since packing/unpacking are reverse (or inverse) operations, check that doing them in sequence yields the original unpacked file.
+
+Problem 2 (150 pts)
+
+Code an app, linesmod, that takes one or two filenames as command-line argument. The first filename specifies a text file that contains lines that end in '\n' including the last line. The second filename is optional. linesmod reads the lines of the first file into main memory and allows a number of editing operations such as printing lines to stdout, deleting lines, truncating lines, joining lines, and saving the modified content to a file. If a second filename is provided as command-line argument, the modified content is written to the second file, leaving the original (i.e., first) file intact. If a second filename is not provided then the first file is overwritten with the modified content.
+
+Phase I. Create subdirectory v16/ where linesmod is implemented. main() in v16/main.c calls, void linesinfo(char *, unsigned int *, unsigned int *), coded in linesinfo.c where the first argument points to the filename specified on the command-line, the second argument points to a local variable of main(), unsigned int numlines, where the number of lines will be stored, the third argument points to local variable of main(), unsigned int linemax, where the maximum line length (excluding '\n') across all lines will be saved. An input file is invalid if it is not a text file or the last byte of the file is not newline (i.e., '\n'). If the input file is determined to be invalid, linesinfo() outputs a suitable error message to stdout before calling exit(1) to terminate the app. If successful, linesinfo() calls fclose() to close the file before returning to its caller main(). For example, if the input file contains
+
+ABCDE\n
+0123456789\n
+%2bBcd99\n
+
+where \n is meant to denote a single newline character then the number of lines is 3 and maximum line length 10.
+
+Phase II. linesmod uses a data structure
+
+typedef struct linesstruct {
+     char *databytes; // ptr to characters of a line
+     int id; // line number
+     int len; // line length
+     struct linesstruct *next; // ptr used when joining lines
+} linesstruct_t;
+
+to store the content of the input file in main memory. The field databytes will point to a 1-D char array (allocated using malloc()) that will contain the content of a line. The id field specifies the line number starting at 0 (i.e., first line). The third field len contains the length of the line inclusive '\n'. The next field contains a pointer to a 1-D char array that is relevant if a line has been joined by another line by appending the latter. Otherwise, next contains NULL. main() has a local variable, linesstruct_t *filedat, and calls malloc() to allocate numlines * sizeof(linesstruct_t) bytes of contiguous memory where data related to the input file is stored. linesmod always checks if malloc() fails. If a call to malloc() fails, linesmod outputs an error message to stdout and calls exit(1).
+
+Phase III. main() calls, void buildstruct(char *, int, linestruct_t *), coded in v16/buildstruct.c where the first argument specified the input filename, the second argument is linemax, and the third argument is pointer filedat. buildstruct() calls malloc() to allocate linemax + 1 byte of heap memory to a local variable, char *buff, that will be used to temporarily hold the characters of each line of the input file. buildstruct() opens the input file and reads its content byte-by-byte using fgetc(). The bytes of a line are stored in buff which is large enough to store the longest line. After determining the length of the first line (including '\n') buildstruct() calls malloc() to allocate just enough contiguous bytes to store the content of the line temporarily stored in buff. The address returned by malloc() (if successful) is stored in the databytes field of the first element of the internal data structure linesstruct_t pointed to by the third argument. The characters contained in buff including '\n' are copied to the memory pointed to by databytes. The field id is set to 0 (i.e., first line), the field len is set to the length of the line, and the next field is set to NULL (its default value). Building of the internal data structure is continued for the remaining numlines - 1 lines of the input file, incrementing the id field for each new line. Note that buildstruct() will always return to main() unless malloc() fails, in which case it prints an error message followed by exit(1).
+
+Phase IV. After buildstruct() returns, main() prints the prompt "Q: " to stdout and awaits user input which is read using getchar(). The user has several options:
+
+(a) Character 'q' followed by ENTER/RETURN (which generates character '\n'). This input from stdin informs linesmod that the app should terminate. main() does not modify the input file and calls exit(0) to terminate.
+
+(b) Character 'd' followed by space character ' ', then a sequence of numeric characters ('0', '1', '2', ..., '9') representing a nonnegative integer, followed by ENTER/RETURN. 'd' commands the app to delete a line which is accomplished by changing the id field of the line to -1. Use the library function atoi() to convert the sequence of numeric characters into an integer. Use the man page of atoi() to check its specification and usage. If the command is ill-formed (e.g., the sequence following 'd' is not the space character followed by numeric characters), linesmod outputs a suitable error message to stdout then prints a fresh prompt "Q: " on a new line on stdout. The same goes if the specified line number is invalid (e.g., too large). If the specified line number had already been deleted, a fresh prompt is output without indicating that the operation was superfluous (called idempotent operation).
+
+(c) Character 's' followed by ENTER/RETURN. This informs that the data structure in main memory should be saved before terminating. If a second filename was provided as command-line argument the content pointed to filedat is written to the second file. If fopen() fails a suitable error message is output to stdout before calling exit(1) to terminate the app. If a second filename was not specified as command-line argument, the first file's content is overwritten with the content pointed to by filedat. To do so, close the first file which had been opened for read ("r") and reopen for write ("w"). Writing the content pointed to by filedat to a file means: starting at line number 0, unless a line has been deleted write the line content pointed to by databytes to the file including '\n' if the next pointer is NULL. If next is not NULL this implies that a line has been joined (i.e., appended) to the current line. main() follows the next pointer to access the pointer databytes of the appended line and outputs the characters that it points to. For simplicity we will disallow more than 2 lines to be joined into a single line. That is, a line that is the result of joining two lines may not be joined with anotber line. This operation is continued until the last line has been saved after which exit(0) is called to terminate the app.
+
+(d) Character 'j' followed by space followed by character sequences representing two nonnegative integers separated by space followed by ENTER/RETURN. The 'j' option requests that two lines specified by the two integers following 'j' be joined (i.e., second line appended to the first line). Sanity checks must be performed including that the two line numbers are valid and have not been previously deleted or joined (i.e., id field is not -1). To join the lines, the next field of the first line is set to point to the second line. The id field of the second line is set to -1. Hence the second does not exist as a separate line but its content is preserved as an appendage of the first line. As noted in (c), we will not allow joining more than two lines into a single line. If an attempt is made, linesmod outputs a suitable error message to stdout and terminates.
+
+(e) Character 'v' followed by ENTER/RETURN. main() outputs all the valid lines pointed to by filedat. This is the same operation as 's' but for writing the content to stdout instead of a file.
+
+(f) Character 'v' followed by space, an integer followed by ENTER/RETURN. If the line number is valid (including not being -1) then its content pointed to by databytes is output to stdout followed by a fresh prompt. If the input is invalid a suitable error message is printed followed by a fresh prompt.
+
+Create Makefile in v16/ to compile, link, and generate executable file linesmod. Annotate your code with comments to allow a C programmer understand how it works. Test and verify that your app works correctly.
+
+Bonus problem (20 pts)
+
+We will build a dynamic library where compiled machine code (i.e., object code contained in .o files) can be deposited and made available to other programmers for use through linking. Creating dynamic, or shared, libraries is system dependent. The following is a straightforward way to do it in our Linux lab environment as a user of the system. This is contrast to creating dynamic libaries for system-wide use by all users which requires superuser/root privilege.
+
+First, create a subdirectory v17/ under lab5/ and copy two files readinput.c and printoutput.c from Problem 2 of lab3 into v17/. Compile each source file in v17/ separately with the -c option and additional option -fPIC where PIC stands for "position independent code".
+
+Second, create subdirectory v18/ and copy the object files from v17/ into the directory. To generate a shared library named lib2fileio.so in v18/ run
+
+     gcc -shared -o lib2fileio.so *.o
+
+where for brevity the wildcard * is used for the two object files.
+
+Third, use main11.c from Problem 2, lab3, as driver code to check that dynamic linking works correctly. To do so, create object code main11.o from main11.c. Then link main11.o with the shared library
+
+     gcc -o main12.bin main11.o -L pathname-of-lib-directory -l 2fileio
+
+The option "-L pathname-of-lib-directory" specifies the pathname of the directory where you have placed archive lib2fileio.a so that gcc can find it. For example, "-L /homes/alice007/cs240/lab5/v18" instructs gcc to look inside the directory "/homes/alice007/cs240/lab5/v18" for user alice007. The option "-l my2fileio" conveys to gcc that the library is called lib2fileio.a (the prefix "lib" and suffix ".a" are omitted). The archive should contain the two object files readinput.o and printoutput.o.
+
+Fourth, when you try to run main12.bin you may get an error that indicates that the shared library functions cannot be found by the loader. One way to specify where to find lib2fileio.so is via the environment variable LD_LIBRARY_PATH. Check using the command,
+
+% echo $LD_LIBRARY_PATH
+
+its value which lists the existing paths. Unless you have already customized it, it is likely to be undefined or empty. How you define LD_LIBRARY_PATH is dependent on the shell you are running. In the case of tcsh, the following
+
+     setenv LD_LIBRARY_PATH pathname-of-lib-directory
+
+does the trick where pathname-of-lib-directory is the full pathname of the direcctory where your shared library is located. For bash or Bourne shell (sh), the following will do
+
+     export LD_LIBRARY_PATH=pathname-of-lib-directory
+
+Based on what shell you are using, configure LD_LIBRARY_PATH accordingly so that the loader can find it. If all goes well, when executing main12.bin it should be able to access your shared library functions in lib2fileio.so dynamically. Test and verify that your driver program object file, main11.o, links correctly with your dynamic library, and the resultant executable main12.bin loads and runs correctly.
+
+The Bonus Problem is entirely optional. Bonus points count toward reaching 35% of the course grade contributed by lab assignments.
+
+Turn-in instructions
+
+Electronic turn-in instructions:
+
+We will use turnin to manage lab assignment submissions. In the parent directory of lab5, run the command
+
+turnin -c cs240 -p lab5 lab5
+
+You can verify/list your submission by running: turnin -c cs240 -p lab5 -v. Please double-check that you submitted what you intended to submit.
+
+Back to the CS 240 web page
+

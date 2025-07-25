@@ -1,0 +1,74 @@
+#include "funcs15.h"
+
+/*
+ * packfile gets two files, one to read the string, and another
+ * to unload the read string into binary file.
+ */
+int packfile(FILE *input, FILE *output) {
+    /*
+     * some important variables for later.
+     */
+
+    int c = fgetc(input);
+    unsigned int r = 0;
+    int bicount = 0;
+    int tbytes = 0;
+
+    /*
+     * c reads in the input file. First: make sure it not NULL, otherwise, give
+     * an error.
+     */
+    if (c == EOF) { //
+        fprintf(stderr, "Error: input is empty\n");
+        exit(1);
+    }
+
+    /*
+     * until we reach the end of the file, we keep reading each 1 or 0. Make
+     * sure that it is ONLY those two, otherwise give an error.
+     *
+     * We then proceed to shift to the left for a new bit and add it.
+     * repeat until out bit counter is above 8, bc that means we have a full
+     * byte and we place the bit shift to the output before going onto next.
+     */
+    while (c != EOF) {
+        if (!(c == '1' || c == '0')) {
+            fprintf(stderr, "Error: input has char that is not 0 or 1. \n");
+            exit(1);
+        }
+
+	if(bicount > 0){
+            r = (r << 1);
+	}
+
+        if (c == '1') {
+            r = r | 1;
+        }
+        bicount++;
+
+        if (bicount == 8) {
+            fputc(r, output);
+            tbytes++;
+            r = 0;
+            bicount = 0;
+        }
+      c = fgetc(input);
+    }
+
+ /*
+  * Soimtimes, input is not exactly %8 = 0. Because of that, there are
+  * remainders we will deal with. the remaining will be shifted all the way to
+  * the left to stuff the byte full before writing tge kast byte.
+  */
+    if (bicount > 0) {
+
+        fputc(r, output);
+        tbytes++;
+    }
+
+    fputc(bicount == 0 ? 8 : bicount, output);
+    tbytes++;
+
+    /*return total num of bytes we have, num/8 ceiling*/
+    return tbytes;
+}

@@ -1,4 +1,4 @@
-#include "funcs16.h"
+#include "funcs16.h" 
 
 
 void buildstruct(char *filename, int linemax, struct linesstruct *filedat) {
@@ -10,7 +10,7 @@ void buildstruct(char *filename, int linemax, struct linesstruct *filedat) {
     fprintf(stderr,"Error: cannot open file for reading\n");
     exit(1);
   }
-
+  
   // make sure to allocate memory for the buffer
   char *buff = malloc(linemax + 1);
 
@@ -29,7 +29,7 @@ void buildstruct(char *filename, int linemax, struct linesstruct *filedat) {
   /*loop through fp for each c until it reaches EOF
    * each buffer index should store the c and then increment the index
    * if c is a newline, we null terminate the buffer to end the string
-   * we change the struct for the current line index to allocate memeory for
+   * we change the struct for the current line index to allocate memeory for 
    * however many indexes there were.
    * make sure the struct .datatypes properly ahd memeory allocated.
    * free after use

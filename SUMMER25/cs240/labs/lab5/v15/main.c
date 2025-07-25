@@ -42,7 +42,7 @@ int main(int argc, char** argv)
   /*
    * the very first arg is the mode and we check that right now with
    * argv and if it is p, we will simply packfile. Unpackfile is the one
-   * that needs more work. We will print a success if done, initially tested
+   * that needs more work. We will print a success if done, initially tested 
    * printing what the packfile returns to make sure before closing.
    * */
   if (argv[1][0] == 'p') {
@@ -57,10 +57,10 @@ int main(int argc, char** argv)
    * now on the other hand, if unpack is chosen we first get two variables, one
    * which gets the last and the other that gets the 2nd to last. we read in
    * from input and while the file doesn not end, we continue parsing to get the
-   * ltwo final.
+   * ltwo final. 
    *
    * Now we have to repon the file bc we need to be back at the front of the
-   * file. This time we have all the valid bits from ltwo and the two files to
+   * file. This time we have all the valid bits from ltwo and the two files to 
    * take unpack and unpack onto. finally, we close.
    */
   if (argv[1][0] == 'u') {

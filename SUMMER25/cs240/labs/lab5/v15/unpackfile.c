@@ -14,12 +14,12 @@ int unpackfile(int vbits,FILE *input,FILE *output) {
     int nextbyte = fgetc(input);
 
     int tbytes = 0;
-
+    
 
     /*
      * we will read each bit in the input first, having x work as one that
      * looks ahead to the next byte without replacing c or nextbyte when needed
-     * initially. Keep going till the end, otherwise stop. If the bit is 1, we
+     * initially. Keep going till the end, otherwise stop. If the bit is 1, we 
      * print 1 into output, 0 otherwise, before moving the c, nextbyte, and x.
      */
 
@@ -28,7 +28,7 @@ int unpackfile(int vbits,FILE *input,FILE *output) {
         if (x == EOF) {
             break;
         }
-
+        
 
         for (int i = 7; i >= 0; i--) {
             if (((c >> i) & 1) == 1) {
@@ -37,12 +37,12 @@ int unpackfile(int vbits,FILE *input,FILE *output) {
                 fputc('0', output);
             }
         }
-
+        
         c = nextbyte;
         nextbyte = x;
         tbytes++;
     }
-
+    
     /*
      * the last bit is important as we will use vbits. Only if it is not EOF.
      * We read if the last bit is 1 or 0 and print it out into output. For each
@@ -60,7 +60,8 @@ int unpackfile(int vbits,FILE *input,FILE *output) {
         }
         tbytes++;
     }
-
+    
     /*return total bytes*/
     return tbytes;
 }
+

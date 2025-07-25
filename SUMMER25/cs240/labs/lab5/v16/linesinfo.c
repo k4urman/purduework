@@ -1,4 +1,4 @@
-#include "funcs16.h"
+#include "funcs16.h" 
 
 //takes in a filename, the number of lines in said file and max
 void linesinfo(char *filename, unsigned int *numlines, unsigned int *linemax) {

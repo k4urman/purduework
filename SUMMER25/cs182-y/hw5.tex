@@ -330,6 +330,61 @@ Sum of probabilities:
         \end{itemize}
     \end{enumerate}
 
+    \clearpage
+\section*{Question 7}
+
+    \textbf{Consider a graph $G$ with the vertex set $V=\{v_1, v_2, v_3, v_4, v_5, v_6\}$ and the edge set $E=\{(v_1, v_2), (v_2, v_3), (v_3, v_4), (v_4, v_5), (v_5, v_1), (v_1, v_3), (v_4, v_6)\}$.}
+    \begin{enumerate}[label=(\alph*)]
+        \item Draw the graph $G$.
+        \item Determine the chromatic number $\chi(G)$ of the graph.
+        \item What is the minimum number of edge(s) you need to remove from $G$ to make the graph bipartite? List the edge(s) you need to remove and provide the two vertex sets (each partition) of the resulting bipartite graph.
+    \end{enumerate}
+
+    \subsection*{Solution}
+    \begin{enumerate}[label=(\alph*)]
+        \item
+        \begin{itemize}
+            \item[] 
+
+                \begin{figure}[htbp] % [htbp] are placement options (here, top, bottom, page)
+        \centering % Centers the image horizontally
+        \includegraphics[width=0.5\linewidth]{cs182/IMG_2199.jpeg} % Include the image
+        \label{fig:your_image_label} % Label for cross-referencing
+                \end{figure}
+            
+        \end{itemize}
+        \item
+        \begin{itemize}
+            \item[] 
+                \begin{figure}[htbp] % [htbp] are placement options (here, top, bottom, page)
+        \centering % Centers the image horizontally
+        \includegraphics[width=0.5\linewidth]{cs182/IMG_2200.jpeg} % Include the image
+        \label{fig:your_image_label} % Label for cross-referencing
+                \end{figure}
+            
+            \textbf{Answer:} $\chi(G) = 3$  \\ \\
+        \end{itemize}
+        \item
+        \begin{itemize}
+            \item[] 
+
+% Test removing one edge
+Remove \( (v_2, v_3) \): \\
+Edges left: \( (v_1, v_2), (v_3, v_4), (v_4, v_5), (v_5, v_1), (v_1, v_3), (v_4, v_6) \) \\
+5-cycle broken (no \( v_2-v_3 \)) \\
+Triangle broken (no \( v_2-v_3 \)) \\
+Remaining graph: Paths \( v_1-v_5-v_4-v_3 \), \( v_1-v_2 \), edge \( v_4-v_6 \) \\
+Partitions: \( X = \{v_1, v_4\} \), \( Y = \{v_2, v_3, v_5, v_6\} \) \\
+Edges \( (v_1, v_2), (v_1, v_5), (v_1, v_3), (v_3, v_4), (v_4, v_5), (v_4, v_6) \) are between \( X \) and \( Y \) \\
+
+% Final answer
+\textbf{Answer: }
+\(
+\text{(c) } 1 \text{ edge } (v_2, v_3), \text{ partitions } \{v_1, v_4\}, \{v_2, v_3, v_5, v_6\}
+\)
+
+        \end{itemize}
+    \end{enumerate}
 
 
 \end{document}

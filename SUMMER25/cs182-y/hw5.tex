@@ -233,5 +233,76 @@ Let \( P_s \) be the probability of reaching HHT before HTH from state \( s \).
     \end{enumerate}
 
 
+\clearpage
+\section*{Question 5}
+
+    \textbf{A submarine is missing. You believe that it was equally likely to have gone down in any of 5 possible regions. If the submarine is in region $i$, then the probability that the submarine will be found is $1 - \beta_i$ ($i=1,2,3,4,5$) for some $0 < \beta_i < 1$. We call $\beta_i$ as an "overlook probability" because it means the probability of failing to find the submarine in region $i$ during a search, given that it is actually located in region $i$. For each $i=1,2,3,4,5$, calculate the conditional probability that the submarine is in the $i$th region given that a search of region 3 was unsuccessful.}
+    \begin{enumerate}[label=(\alph*)]
+        \item[] 
+    \end{enumerate}
+
+    \subsection*{Solution}
+    \begin{enumerate}[label=(\alph*)]
+        \item []
+        \begin{itemize}
+            \item[]  
+            % Defining the problem
+Let \( S_i \) denote the event that the submarine is in region \( i \) (\( i=1,2,3,4,5 \)), with \( P(S_i) = \frac{1}{5} \). \\
+Let \( F_3 \) denote the event that a search of region 3 is unsuccessful \\
+Compute \( P(S_i | F_3) \) for each \( i = 1, 2, 3, 4, 5 \) \\
+
+% Applying Bayes' Theorem
+
+\(
+P(S_i | F_3) = \frac{P(F_3 | S_i) P(S_i)}{P(F_3)}
+\) \\
+
+
+% Numerator
+For \( i = 3 \): \( P(F_3 | S_3) P(S_3) = \beta_3 \cdot \frac{1}{5} \)\\
+For \( i = 1, 2, 4, 5 \): \( P(F_3 | S_i) P(S_i) = 1 \cdot \frac{1}{5} = \frac{1}{5} \) \\
+
+% Denominator: Total probability of F_3
+\(
+P(F_3) = \sum_{i=1}^5 P(F_3 | S_i) P(S_i)
+\) \\
+\(
+= P(F_3 | S_1) P(S_1) + P(F_3 | S_2) P(S_2) + P(F_3 | S_3) P(S_3) + P(F_3 | S_4) P(S_4) + P(F_3 | S_5) P(S_5)
+\) \\
+\(
+= 1 \cdot \frac{1}{5} + 1 \cdot \frac{1}{5} + \beta_3 \cdot \frac{1}{5} + 1 \cdot \frac{1}{5} + 1 \cdot \frac{1}{5} = \frac{1 + 1 + \beta_3 + 1 + 1}{5} = \frac{4 + \beta_3}{5}
+\) \\
+
+% Conditional probabilities
+- For \( i = 1 \):
+\(
+P(S_1 | F_3) = \frac{P(F_3 | S_1) P(S_1)}{P(F_3)} = \frac{1 \cdot \frac{1}{5}}{\frac{4 + \beta_3}{5}} = \frac{\frac{1}{5}}{\frac{4 + \beta_3}{5}} = \frac{1}{4 + \beta_3}
+\) \\
+- For \( i = 2 \):
+\(
+P(S_2 | F_3) = \frac{1 \cdot \frac{1}{5}}{\frac{4 + \beta_3}{5}} = \frac{1}{4 + \beta_3}
+\) \\
+- For \( i = 3 \):
+\(
+P(S_3 | F_3) = \frac{\beta_3 \cdot \frac{1}{5}}{\frac{4 + \beta_3}{5}} = \frac{\beta_3}{4 + \beta_3}
+\) \\
+- For \( i = 4 \):
+\(
+P(S_4 | F_3) = \frac{1 \cdot \frac{1}{5}}{\frac{4 + \beta_3}{5}} = \frac{1}{4 + \beta_3}
+\) \\
+- For \( i = 5 \):
+\(
+P(S_5 | F_3) = \frac{1 \cdot \frac{1}{5}}{\frac{4 + \beta_3}{5}} = \frac{1}{4 + \beta_3}
+\) \\
+
+% Verification
+Sum of probabilities:
+\(
+\frac{1 + 1 + \beta_3 + 1 + 1}{4 + \beta_3} = \frac{4 + \beta_3}{4 + \beta_3} = 1
+\) \\
+        \end{itemize}
+    \end{enumerate}
+
+
 
 \end{document}

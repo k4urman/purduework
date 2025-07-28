@@ -80,4 +80,135 @@
         \end{itemize}
     \end{enumerate}
 
+\clearpage
+\section*{Question 2}
+
+    \textbf{A new robotics club BoilerBots is formed by students in the CS department and the Mechanical Engineering department. The CS students consist of 5 freshmen, 3 sophomores, 2 juniors (Rakesh and Dave), and 2 seniors (Alice and Bob). The Mechanical Engineering students consist of 6 freshmen, 12 sophomores, 4 juniors, and 2 seniors.}
+    \begin{enumerate}[label=(\alph*)]
+        \item The BoilerBots needs to organize a visit from 5 of the CS student members to do outreach at the local elementary school. How many ways can we organize this visit such that exactly 2 freshmen, 1 sophomore, 1 junior, and 1 senior take part?
+        \item We need to form a 5 member CS advisory committee from the 12 CS student members subject to the following constraints: (i) Alice and Bob refuse to serve together. (ii) Rakesh insists that Dave joins any committee that Rakesh joins. Count the number of ways such a committee can be formed.
+        \item All 36 students of the BoilerBots club must decide on the order to list their names on the website. The arrangement must satisfy the following conditions: (a) Each of the freshmen must be immediately preceded by one of the sophomores. (b) The juniors refuse to be listed next to one another.
+    \end{enumerate}
+
+    \subsection*{Solution}
+    \begin{enumerate}[label=(\alph*)]
+        \item
+        \begin{itemize}
+            \item[] \(\binom{5}{2} \cdot \binom{3}{1} \cdot \binom{2}{1} \cdot \binom{2}{1}\) \\ 
+            \(10 \cdot 3 \cdot 2 \cdot 2\)
+            \textbf{Answer:} 120 ways
+        \end{itemize}
+        \item
+        \begin{itemize}
+            \item[] Total ways, no constraints: \(\binom{12}{5} = \frac{12 \cdot 11 \cdot10 \cdot9 \cdot 8}{5 \cdot4 \cdot3 \cdot2 \cdot1} = 792\) \\ \\
+        \(|A|\) = Commitee w/o Alice and Bob \(\binom{10}{3} = \frac{10 \cdot9 \cdot8}{3 \cdot2 \cdot1} = 120\) \\ \\
+        \(|B|\) = Comitee w/Rakesh w/o Dave \(\binom{10}{4} = \frac{10 \cdot9 \cdot8 \cdot7}{4 \cdot3 \cdot2 \cdot1} = 210\) \\ \\
+        \(A \cap B = \binom{9}{2} = \frac{9 \cdot8}{2 \cdot 1} = 36\) \\ \\ 
+        \(A \cup B = 120 + 210 -36 = 294\) \\ 
+        792 - 294 \\
+        \textbf{Answer:} 498 ways 
+        \end{itemize}
+        \item
+        \begin{itemize}
+            \item[] 
+
+% Handling the freshman-sophomore pair condition
+Pair $11$ freshmen with $11$ sophomores:
+\(
+\binom{15}{11} \cdot 11!
+\) 
+
+% Ensuring no two juniors are adjacent
+Choose $6$ positions with at least one gap between them:
+\(
+\binom{25 - 6 + 1}{6} = \binom{20}{6}
+\) 
+
+Arrange $6$ juniors:
+\(
+6!
+\)
+
+% Arranging remaining units
+Arrange $19$ remaining positions:
+\(
+19!
+\)
+
+\(
+\binom{15}{11} \cdot 11! \cdot \binom{20}{6} \cdot 6! \cdot 19!
+\)
+
+% Final answer
+\textbf{Answer}:
+\(
+1365 \cdot 11! \cdot 38760 \cdot 6! \cdot 19!
+\)
+
+            
+        \end{itemize}
+    \end{enumerate}
+
+\clearpage
+\section*{Question 3}
+
+    \textbf{Alice flips a fair coin repeatedly and notes down each flip by using "H" to indicate heads and "T" to indicate tails. For example, HH refers to a heads followed by a heads and TH refers to a tails followed by a heads.}
+    \begin{enumerate}[label=(\alph*)]
+        \item What is the probability that the 3rd heads occurs on the 10th flip? Assume that she stops flipping once the 3rd heads has occurred.
+        \item What is the probability that she sees "HHT" before "HTH"?
+    \end{enumerate}
+
+    \subsection*{Solution}
+    \begin{enumerate}[label=(\alph*)]
+        \item
+        \begin{itemize}
+            \item[] In the first 9 flips, we need to have 2 heads, and there needs tro be 7 tails with 2 heads in total of 9 flips. \\ \\
+            \(\binom{9}{2} \cdot \binom{1}{2}^9 \cdot \frac{1}{2}\) \\ \\
+            \textbf{Answer:} \(\frac{9}{256}\)
+        \end{itemize}
+        \item
+        \begin{itemize}
+            \item[] Define states based on the longest suffix that matches a prefix of ``HHT'' or ``HTH'':
+\begin{itemize}
+    \item[] \( S \): Start (no progress).
+    \item[] \( H \): Ends in H.
+    \item[] \( HH \): Ends in HH.
+    \item[] \( HT \): Ends in HT.
+    \item[] \( HHT \): Reached HHT (absorbing, success).
+    \item[] \( HTH \): Reached HTH (absorbing, failure).
+\end{itemize}
+
+
+Let \( P_s \) be the probability of reaching HHT before HTH from state \( s \).
+\begin{itemize}
+    \item [] Absorbing states: \( P_{HHT} = 1 \), \( P_{HTH} = 0 \).
+    \item[] Equations
+    \(
+    P_S = \frac{1}{2} P_H + \frac{1}{2} P_S \implies \frac{1}{2} P_S = \frac{1}{2} P_H \implies P_S = P_H
+    \)
+    \(
+    P_H = \frac{1}{2} P_{HH} + \frac{1}{2} P_{HT}
+    \)
+    \(
+    P_{HH} = \frac{1}{2} P_{HH} + \frac{1}{2} P_{HHT} = \frac{1}{2} P_{HH} + \frac{1}{2} \implies \frac{1}{2} P_{HH} = \frac{1}{2} \implies P_{HH} = 1
+    \)
+    \(
+    P_{HT} = \frac{1}{2} P_{HTH} + \frac{1}{2} P_S = \frac{1}{2} \cdot 0 + \frac{1}{2} P_S = \frac{1}{2} P_S
+    \)
+    \item [] Substitute:
+    \(
+    P_H = \frac{1}{2} \cdot 1 + \frac{1}{2} \cdot \frac{1}{2} P_S = \frac{1}{2} + \frac{1}{4} P_S
+    \)
+    Since \( P_S = P_H \):
+    \(
+    P_S = \frac{1}{2} + \frac{1}{4} P_S \implies P_S - \frac{1}{4} P_S = \frac{1}{2} \implies \frac{3}{4} P_S = \frac{1}{2} \implies P_S = \frac{\frac{1}{2}}{\frac{3}{4}} = \frac{2}{3}
+    \)
+\end{itemize}
+
+\textbf{Answer}: \( \frac{2}{3} \)
+        \end{itemize}
+    \end{enumerate}
+
+
+
 \end{document}

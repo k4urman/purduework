@@ -304,5 +304,32 @@ Sum of probabilities:
     \end{enumerate}
 
 
+\clearpage
+\section*{Question 6}
+
+    \begin{enumerate}[label=(\alph*)]
+        \item List an Eulerian path of the graph.
+        \item List a Hamiltonian path of the graph.
+        \item The graph currently has neither an Eulerian circuit nor a Hamiltonian circuit. How many more edges do you need to add to make the graph both Eulerian circuit and Hamiltonian circuit? Specify the edge(s) and explain briefly.
+    \end{enumerate}
+
+    \subsection*{Solution}
+    \begin{enumerate}[label=(\alph*)]
+        \item
+        \begin{itemize}
+            \item[] Eularian paty is a path that goes through each edge once. We will go between these vertexes to get to each all the edges:
+            \((vA,vD) \rightarrow(vD, vE) \rightarrow (vE,vA) \rightarrow(vA,vB) \rightarrow (vB,vF) \rightarrow(vF,vD) \rightarrow(vD,vC), \rightarrow (vC,vB) \rightarrow (vvB,vG) \rightarrow (vG.vF)\)
+        \end{itemize}
+        \item
+        \begin{itemize}
+            \item[] Hamiltonian path is a path that visits every vertex once. We will go to these vertexes: \(A \rightarrow E \rightarrow D \rightarrow C \rightarrow B \rightarrow G \rightarrow F\)
+        \end{itemize}
+        \item
+        \begin{itemize}
+            \item[]  An edge between between A and F. For Hamiltonian, from the above, it will be able to return to A. With Eularian, it is the same thing from part A, where the edge finishes at the starting vertex edge. 
+        \end{itemize}
+    \end{enumerate}
+
+
 
 \end{document}

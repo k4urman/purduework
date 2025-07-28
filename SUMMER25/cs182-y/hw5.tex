@@ -31,5 +31,53 @@
     \textit{I, Maninder (Kaurman) Kaur, affirm that I have not given or received any unauthorized help on this assignment and that this work is my own. What I have submitted is expressed and explained in my own words. I have not used any online websites that provide a solution. I will not post any parts of this problem set to any online platform and doing so is a violation of course policy.}
 \end{quote}
 
+\clearpage
+\section*{Question 1}
+
+    \textbf{A multinational company uses six character strings to identify each employee, where the only characters used are $\{1,2,3,4,5,A,B,C,D,E\}$. No characters are repeated.}
+    \begin{enumerate}[label=(\alph*)]
+        \item How many codes begin and end with a letter?
+        \item How many codes contain exactly 3 digits, and they appear consecutively as a block in the code?
+        \item How many codes have no two letters adjacent?
+        \item If all valid employee identification codes are listed in lexicographic ordering $1 < 2 < \cdots < 4 < 5 < A < B < \cdots < D < E$, what is the rank (position) of the code C3A1B2 in a dictionary of these codes?
+    \end{enumerate}
+
+    \subsection*{Solution}
+    \begin{enumerate}[label=(\alph*)]
+        \item
+        \begin{itemize}
+            \item[] Total of 6 positions, index 1 and 6 must be letters, while index 2-5 can be either. \\
+            Index 1 and 6: \(P(5,2) = 5 \cdot 4 = 20\) \\
+            Index 2-5: \(P(8,4)= 8 \cdot7\cdot6\cdot5=1680\) \\
+            \textbf{Answer:} \(20 \cdot 1680\) codes
+        \end{itemize}
+        \item
+        \begin{itemize}
+            \item[] From the wording of the problem, there has to be exactly 3 digits and exactly 3 letters, and where the digits are put together. \\
+            Possible places for the digit block: Positions 1-3, 2-4, 3-5, and 4-6. \\
+            \# of ways for digits and numbers to be\(\binom{5}{3} \cdot 3! = 10 \cdot 6 = 60\) \\
+            \(4 \cdot 60 \cdot 60\) \(\rightarrow\) 4 starting positions for the digits, 60 combinations for the 3 digits, 60 combinations for the 3 letters. \\
+            \textbf{Answer:} 14400 codes \\
+        \end{itemize}
+        \item
+        \begin{itemize}
+            \item[] There are 6 total positions in the code, no char repetition. Only the 5 letters cannot be adjacent (next to). Suppose there exists a letter \(n\) that is \(6 > n\) and represents how many letters there are in a code. \\
+            \(6-n\) meaning there are \(\binom{5}{6-n}\) ways to choose letters from 5 of the ltter choices. \\
+            Since there are 5 possible digits \(6-n \leq 5, k \geq1\) \\
+            There are also 5 letters so \(k \leq 5\)
+            From the amount of gaps we can have: \(n \leq 7-n\) so \(k \leq \lfloor \frac{7}{2} \rfloor = 3\). Meaning n can equal 1,2, or 3. \\ \\
+            If \(n = 1\): \(\binom{5}{1} \cdot \binom{5}{5} \cdot \binom{6}{1} \cdot 1! \cdot 5! = 3600\) \\ \\
+            If \(n = 2\): \(\binom{5}{2} \cdot \binom{5}{4} \cdot \binom{5}{2} \cdot 2! \cdot 4! = 12000\) \\ \\
+            If \(n = 3\): \(\binom{5}{3} \cdot \binom{5}{3} \cdot \binom{4}{3} \cdot 3! \cdot 3! = 14400\) \\ \\
+            \(3600+12000+14400\) \\ \\
+            \textbf{Answer:} 30000 codes
+        \end{itemize}
+        \item
+        \begin{itemize}
+            \item[] Each index of the code has a either a letter or number that holds some lexicographic position. To find the rank of each position, you need to find 1 + the number of codes that come before the indeces. We need to use permutations to count lexicographically smaller by each index left to right. \\
+            \((P(9,5) \cdot 7) + (P(8,4) \cdot 2) + (P(7,3) \cdot 4) + (P(5,1) \cdot 3) + 0\) \\ \\
+            \textbf{Answer:} Rank 110056
+        \end{itemize}
+    \end{enumerate}
 
 \end{document}

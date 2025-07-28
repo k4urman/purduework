@@ -210,5 +210,28 @@ Let \( P_s \) be the probability of reaching HHT before HTH from state \( s \).
     \end{enumerate}
 
 
+\clearpage
+\section*{Question 4}
+
+    \textbf{In a rural village, 1\% of the wells are contaminated with EColi. Contaminated wells produce cloudy water 80\% of the time, while clean wells still run cloudy 5\% of the time. If a well's water is cloudy, the health department runs a coliform test. If the water is cloudy and contaminated, the test returns positive 98\% of the time and the test returns positive 8\% of the time given that the water is cloudy but clean (free of contamination). If we draw a sample of water from a well that returns a positive coliform test and the water is cloudy, find the probability that the sample is actually contaminated.}
+    \begin{enumerate}[label=(\alph*)]
+        \item[] \textbf{Note:} $P(A \cap B | C) = P(A | B \cap C)P(B | C)$. This is the multiplication rule in conditional probability.
+    \end{enumerate}
+
+    \subsection*{Solution}
+    \begin{enumerate}[label=(\alph*)]
+        \item []
+        \begin{itemize}
+            \item[] We need to find \(P(C| W \cap T)\) or the probability that the well is contaminated given there is cloudy water AND a positive test. \\ \\
+            \(P(C| W \cap T) = \frac{(P(T| W \cap C)P(W|C))P(C)}{P(W \cap T)}\) \\ \\
+            \(P(C| W \cap T) = \frac{P(W \cap T | C)P(C)}{P(W \cap T)}\) \\ \\
+            \(P(C| W \cap T) = \frac{P(W \cap T | C)P(C)}{P(W \cap T) = P(W \cap T | C) P(C) + P(W \cap T | C^c) P(C^c)}\) \\ \\
+            \(P(C| W \cap T) = \frac{(0.784 \cdot 0.01)}{(0.00784 + 0.00396)}\) \\ \\
+            \(P(C| W \cap T) = \frac{784}{1180}\) \\ \\
+            \textbf{Answer:} \(\frac{196}{295}\)
+        \end{itemize}
+    \end{enumerate}
+
+
 
 \end{document}

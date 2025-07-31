@@ -12,11 +12,11 @@ void copyprompt(char *dest, char *src) {
 }
 
 int main() {
-  // prompt because %% caused errors
   // initilize the prompt and cmd
   char prompt[MAX_PROMPT] = "% ";
   char cmd[MAX_CMD];
-
+  
+  //loop for terminal
   while (1) {
     printf("%s ", prompt);
 
@@ -46,12 +46,12 @@ int main() {
         int valid = 1;  // makes sure valid
         for (int i = 0; newp[i] && newp[i] != '\n'; i++) {
           char c = newp[i];
-          if (!isalnum(c) && c != ':' && c != '>' && c != '@' && c != '$' &&
-              c != '%' && c != ' ' && c != '\t') {
+          if (!(c >= '0' && c <= '9') && !(c >= 'A' && c <= 'Z') && !(c >= 'a' && c <= 'z') && c != ':' && c != '>' && c != '@' && c != '$' && c != '%' && c != ' ' && c != '\t') {
             valid = 0;
             break;  // if not valid, break for error
           }
         }
+
         if (valid) {
           copyprompt(prompt, newp);  // copies the string to prompt
         } else {
@@ -88,6 +88,9 @@ int main() {
       int token = 0;
       int tindex = 0;
 
+      // used to traverse all the arbitrary values put in
+      // that are NOT a regular command
+      // 'oubawfkslvbnk' for example it will traverse all
       for (int i = 0; cmd[i] != '\0'; i++) {
         if (cmd[i] == ' ' || cmd[i] == '\n') {
           if (token) {
@@ -114,3 +117,4 @@ int main() {
 
   return 0;
 }
+

@@ -1,4 +1,4 @@
-﻿﻿#ifndef FUNCS21_H
+#ifndef FUNCS21_H
 #define FUNCS21_H
 
 #include <stdio.h>

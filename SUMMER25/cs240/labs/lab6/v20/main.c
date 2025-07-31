@@ -15,5 +15,5 @@ int main() {
   printf("c + a + t = %s\n", myconcat(4, "c", "a", "\0"));
 
   // cat8 prints properly
-  printf("c + a + t + 8 = %s\n", myconcat(4, "c", "a", "t", "8"));
+  printf("c + a + t + 8 = %s\n", myconcat(4, "c", "a", "t", "8", "7uiuhiub" "kjnkj));
 }
